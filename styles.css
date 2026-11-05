@@ -638,3 +638,43 @@ body {
   background-color: var(--surface);
   border: 2px solid var(--border-color);
   border-radius: var(--radius-sm);
+  padding: 1rem;
+  position: relative;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.25rem;
+}
+
+#bellCurveCanvas {
+  width: 100%;
+  height: 320px;
+  display: block;
+}
+
+.curve-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.legend-color-box {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 2px;
+}
+
+/* Interactive Wizard / Step Flow */
+.wizard-box {
+  background: var(--surface);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
