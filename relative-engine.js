@@ -143,3 +143,30 @@ export function generateBellCurveData(mean, sd, studentScore = null, numPoints =
   const startX = Math.max(0, Math.floor(mean - 3.5 * sd));
   const endX = Math.min(100, Math.ceil(mean + 3.5 * sd));
   const step = (endX - startX) / (numPoints - 1);
+
+  const points = [];
+  let maxY = 0;
+
+  for (let i = 0; i < numPoints; i++) {
+    const x = startX + i * step;
+    const y = normalPDF(x, mean, sd);
+    if (y > maxY) maxY = y;
+    points.push({ x: Math.round(x * 10) / 10, y });
+  }
+
+  // Student percentile
+  let studentPercentile = null;
+  if (studentScore !== null && sd > 0) {
+    const z = (studentScore - mean) / sd;
+    studentPercentile = Math.round(standardNormalCDF(z) * 1000) / 10;
+  }
+
+  return {
+    startX,
+    endX,
+    points,
+    maxY,
+    studentPercentile
+  };
+}
+
