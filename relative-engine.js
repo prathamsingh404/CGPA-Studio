@@ -128,3 +128,18 @@ export function computeGradeCutoffs(mean, sd, isAbsolute = false) {
 
 // Determine Grade from Total Marks
 export function evaluateGrade(totalMarks, cutoffs) {
+  const rounded = Math.round(totalMarks * 10) / 10;
+  for (const cutoff of cutoffs) {
+    if (rounded >= cutoff.minMarks && cutoff.grade !== "F") {
+      return cutoff;
+    }
+  }
+  // If not meeting D cutoff, it's F
+  return cutoffs.find(c => c.grade === "F") || { grade: "F", points: 0, label: "Fail / Repeat" };
+}
+
+// Generate data points for Bell Curve Visualization
+export function generateBellCurveData(mean, sd, studentScore = null, numPoints = 120) {
+  const startX = Math.max(0, Math.floor(mean - 3.5 * sd));
+  const endX = Math.min(100, Math.ceil(mean + 3.5 * sd));
+  const step = (endX - startX) / (numPoints - 1);
