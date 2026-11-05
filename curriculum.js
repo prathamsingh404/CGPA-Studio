@@ -46,6 +46,20 @@ export const BMU_PROGRAMS = {
           { code: "ECE201", name: "Digital Logic Design & Microprocessors", credits: 4, type: "Hardware Core", maxInternal: 50, maxEndSem: 50 },
           { code: "CSE203", name: "Object Oriented Programming (Java/C++)", credits: 4, type: "Core Computing", maxInternal: 50, maxEndSem: 50 },
           { code: "HUM201", name: "Economics for Engineers", credits: 3, type: "Management Core", maxInternal: 50, maxEndSem: 50 },
+          { code: "HUM202", name: "Critical Thinking & Perspectives", credits: 2, type: "AEC", maxInternal: 50, maxEndSem: 50 }
+        ]
+      },
+      4: {
+        sem: 4,
+        title: "Semester IV (Systems & Architecture)",
+        credits: 21,
+        courses: [
+          { code: "CSE204", name: "Database Management Systems (DBMS)", credits: 4, type: "Core Computing", maxInternal: 50, maxEndSem: 50 },
+          { code: "CSE205", name: "Operating Systems", credits: 4, type: "Systems Core", maxInternal: 50, maxEndSem: 50 },
+          { code: "CSE206", name: "Computer Organization & Architecture", credits: 4, type: "Hardware Core", maxInternal: 50, maxEndSem: 50 },
+          { code: "CSE207", name: "Design & Analysis of Algorithms", credits: 4, type: "Core Theory", maxInternal: 50, maxEndSem: 50 },
+          { code: "CSE208", name: "Theory of Computation & Automata", credits: 3, type: "Core Theory", maxInternal: 50, maxEndSem: 50 },
+          { code: "PRJ204", name: "Minor Design Project / Community Action", credits: 2, type: "Experiential Project", maxInternal: 60, maxEndSem: 40 }
     }
   }
 };
