@@ -748,3 +748,126 @@ body {
   border-radius: var(--radius-sm);
   font-size: 0.9rem;
   line-height: 1.55;
+  box-shadow: var(--shadow-sm);
+}
+
+.message-user {
+  align-self: flex-end;
+  background-color: var(--accent-yellow);
+  color: #000;
+  font-weight: 600;
+}
+
+.message-ai {
+  align-self: flex-start;
+  background-color: var(--surface-alt);
+  color: var(--text-main);
+}
+
+.message-ai h3, .message-ai h4 {
+  margin: 0.6rem 0 0.4rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.message-ai ul, .message-ai ol {
+  padding-left: 1.2rem;
+  margin: 0.5rem 0;
+}
+
+.message-ai li {
+  margin-bottom: 0.35rem;
+}
+
+.chat-input-bar {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.85rem;
+  background: var(--surface);
+  border-top: 2px solid var(--border-color);
+}
+
+.chip-container {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  padding: 0.5rem 1rem;
+  background: var(--surface-alt);
+  border-top: 1px solid var(--border-color);
+}
+
+.chip-btn {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border: 1px solid var(--border-color);
+  background: var(--surface);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.chip-btn:hover {
+  background: var(--accent-pink);
+  color: #fff;
+}
+
+/* Modal Styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(10, 10, 10, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-card {
+  background: var(--surface);
+  border: 3px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+  max-width: 720px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 2rem;
+  position: relative;
+  transform: translateY(20px);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-overlay.open .modal-card {
+  transform: translateY(0);
+}
+
+/* Print Friendly Styles */
+@media print {
+  body {
+    background: none;
+  }
+  .top-header, .hero-banner, .tabs-navigation, .nav-controls, .btn, .chat-container, .modal-overlay {
+    display: none !important;
+  }
+  .panel {
+    box-shadow: none !important;
+    border: 1px solid #000 !important;
+    page-break-inside: avoid;
+  }
+}
+
