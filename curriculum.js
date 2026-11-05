@@ -115,6 +115,15 @@ export const BMU_PROGRAMS = {
     name: "B.Tech CSE with AI & Data Science",
     school: "School of Engineering & Technology",
     university: "BML Munjal University, Gurugram",
+    totalCredits: 172,
+    semesters: {
+      3: {
+        sem: 3,
+        title: "Semester III (Data & Foundations)",
+        credits: 21,
+        courses: [
+          { code: "AID201", name: "Data Structures & Computational Thinking", credits: 4, type: "Core", maxInternal: 50, maxEndSem: 50 },
+          { code: "MTH201", name: "Linear Algebra & Optimization for AI", credits: 4, type: "Math Core", maxInternal: 50, maxEndSem: 50 },
     }
   }
 };
