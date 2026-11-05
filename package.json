@@ -1,7 +1,22 @@
 {
   "name": "cgpa-studio",
-  "version": "1.0.0",
-  "description": "CGPA Studio • BMU B.Tech CSE Relative Grading CGPA Calculator and AI End-Sem Planner",
+  "version": "2.6.0",
+  "description": "BMU B.Tech CSE Relative Grading CGPA Calculator, Bell Curve Simulator, and AI End-Sem Marks Planner",
   "type": "module",
-  "main": "server.js"
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "serve": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "bmu",
+    "cgpa",
+    "calculator",
+    "relative-grading",
+    "bell-curve",
+    "end-sem-planner"
+  ],
+  "author": "Antigravity",
+  "license": "MIT"
 }
