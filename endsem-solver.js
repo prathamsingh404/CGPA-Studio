@@ -45,5 +45,31 @@ export function calculateRequiredSGPA(currentCGPA, completedCredits, targetCGPA,
   const semPointsNeeded = totalPointsNeeded - currentPoints;
   const reqSGPA = semPointsNeeded / sCr;
 
-  return { requiredSGPA: reqSGPA };
+  const maxAttainable = ((curC * compCr) + (10.0 * sCr)) / totalCredits;
+  const minAttainable = ((curC * compCr) + (4.0 * sCr)) / totalCredits;
+
+  let feasibility = "ACHIEVABLE";
+  let statusMessage = "Target is well within reach!";
+
+  if (reqSGPA > 10.0) {
+    feasibility = "IMPOSSIBLE_THIS_SEM";
+    statusMessage = `Mathematically unreachable in 1 semester. Max possible CGPA this sem is ${maxAttainable.toFixed(2)} (with straight 10.0 SGPA).`;
+  } else if (reqSGPA > 9.3) {
+    feasibility = "EXTREME";
+    statusMessage = "Requires top-tier outstanding performance (mostly A+ / 10s) across all subjects.";
+  } else if (reqSGPA > 8.5) {
+    feasibility = "CHALLENGING";
+    statusMessage = "Demands high consistency. Target A / A+ in 4-credit subjects.";
+  } else if (reqSGPA <= 4.0) {
+    feasibility = "GUARANTEED";
+    statusMessage = "Guaranteed as long as you pass all registered subjects (SGPA >= 4.0).";
+  }
+
+  return {
+    requiredSGPA: Math.round(reqSGPA * 100) / 100,
+    maxAttainableCGPA: Math.round(maxAttainable * 100) / 100,
+    minAttainableCGPA: Math.round(minAttainable * 100) / 100,
+    feasibility,
+    statusMessage
+  };
 }
