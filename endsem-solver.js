@@ -191,5 +191,30 @@ export function solveEndSemMarks({
       if (s.targetGP > 4) {
         const potentialDrop = s.credits;
         if (currentTotalPoints - potentialDrop >= totalPointsNeeded - 0.1) {
+          s.targetGP -= 1;
+          currentTotalPoints -= potentialDrop;
+          dropped = true;
+        }
+      }
+    }
+    if (!dropped) break;
+  }
+
+  // Restore original ordering
+  subjectPlans.sort((a, b) => a.index - b.index);
+
+  // Now calculate exact required End-Sem marks for each course
+  subjectPlans.forEach(s => {
+    const gradeScaleItem = BMU_GRADE_SCALE.find(g => g.points === s.targetGP) || BMU_GRADE_SCALE[3];
+    s.targetGrade = gradeScaleItem.grade;
+
+    const cutoff = getCutoffForPoints(s.targetGP);
+    const minMarksNeeded = cutoff.minMarks;
+
+    // In BMU, typical course is 50 Internal + 50 EndSem = 100 Total.
+    // If weights differ (e.g., 60/40), we compute proportionally.
+    let requiredEndSemRaw = minMarksNeeded - s.internal;
+
+    if (requiredEndSemRaw <= 0) {
   return { targetSGPA, subjectPlans };
 }
