@@ -598,3 +598,43 @@ body {
 .grade-C_plus { background-color: #fb923c; color: #000; }
 .grade-C { background-color: #f87171; color: #fff; }
 .grade-D { background-color: #e2e8f0; color: #000; }
+.grade-F { background-color: #000000; color: #ff334b; }
+
+/* Interactive Sliders */
+.slider-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.custom-range {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  background: var(--surface-alt);
+  border: 1.5px solid var(--border-color);
+  border-radius: 4px;
+  outline: none;
+}
+
+.custom-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-color);
+  background: var(--accent-pink);
+  border-radius: 4px;
+  box-shadow: 1.5px 1.5px 0px var(--border-color);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.custom-range::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+/* Bell Curve Canvas Area */
+.canvas-wrapper {
+  background-color: var(--surface);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm);
