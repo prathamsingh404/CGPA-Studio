@@ -60,6 +60,20 @@ export const BMU_PROGRAMS = {
           { code: "CSE207", name: "Design & Analysis of Algorithms", credits: 4, type: "Core Theory", maxInternal: 50, maxEndSem: 50 },
           { code: "CSE208", name: "Theory of Computation & Automata", credits: 3, type: "Core Theory", maxInternal: 50, maxEndSem: 50 },
           { code: "PRJ204", name: "Minor Design Project / Community Action", credits: 2, type: "Experiential Project", maxInternal: 60, maxEndSem: 40 }
+        ]
+      },
+      5: {
+        sem: 5,
+        title: "Semester V (AI Spine & Specializations)",
+        credits: 20,
+        courses: [
+          { code: "CSE301", name: "Computer Networks & Protocols", credits: 4, type: "Systems Core", maxInternal: 50, maxEndSem: 50 },
+          { code: "CSE302", name: "Artificial Intelligence & Machine Learning", credits: 4, type: "AI Spine Core", maxInternal: 50, maxEndSem: 50 },
+          { code: "CSE303", name: "Software Engineering & Agile Methods", credits: 3, type: "Core Computing", maxInternal: 50, maxEndSem: 50 },
+          { code: "CSE31X", name: "Program Elective I (Cloud / Full-Stack)", credits: 3, type: "Track Elective", maxInternal: 50, maxEndSem: 50 },
+          { code: "OPE301", name: "Open Elective I (Interdisciplinary)", credits: 3, type: "Open Elective", maxInternal: 50, maxEndSem: 50 },
+          { code: "PRJ301", name: "AI Spine Applied Capstone Mini-Project", credits: 3, type: "Experiential Project", maxInternal: 60, maxEndSem: 40 }
+        ]
     }
   }
 };
