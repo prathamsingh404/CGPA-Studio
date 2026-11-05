@@ -1,5 +1,7 @@
+// AI Academic Advisor & Interactive Planner for BMU CSE
+
 import { BMU_GRADE_SCALE, RELATIVE_PRESETS } from './curriculum.js';
-import { solveEndSemMarks, calculateRequiredSGPA } from './endsem-solver.js';
+import { solveEndSemMarks, calculateRequiredSGPA, calculateUpdatedCGPA } from './endsem-solver.js';
 
 export class BMUAIAdvisor {
   constructor(geminiApiKey = null) {
@@ -136,6 +138,66 @@ export class BMUAIAdvisor {
 ${solverResult.subjectPlans.map(s => `- **${s.name}** (${s.credits} cr): Need **${s.requiredEndSem}/50** in End-Sem ➔ Target **Grade ${s.targetGrade}** (${s.targetGP} pts)`).join('\n')}
 
 💡 **Strategy Tip:** Put 60% of your prep time into your 4-credit courses (${courses.filter(c => c.credits >= 4).map(c => c.name).slice(0, 3).join(', ')}).`;
-  return { assessmentSummary, recommendations };
+    }
+
+    if (p.includes("what if") || p.includes("if i get") || p.includes("risk") || p.includes("fail")) {
+      return `### 🔍 Sensitivity & What-If Analysis:
+- **Credit Weight Sensitivity:** Every 1 grade point drop in a **4-credit course** (e.g. A to B+) reduces your semester SGPA by **${(4 / totalSemCredits).toFixed(2)}** points.
+- **In a 2-credit course**, a 1 grade point drop only impacts your SGPA by **${(2 / totalSemCredits).toFixed(2)}** points.
+- **Backlog Guard:** At BMU, a total score below minimum threshold (< 35 or < Mean - 2.0σ) results in an **F (Repeat)** grade (0 points), severely dragging down both SGPA and CGPA. Ensure you never leave any end-sem questions blank!`;
+    }
+
+    if (p.includes("percentage") || p.includes("convert") || p.includes("formula")) {
+      const pct = (targetCGPA * 10).toFixed(1);
+      return `### 📐 BMU Official Formula & Percentage Conversion:
+- **SGPA Formula:** $\\text{SGPA} = \\frac{\\sum (\\text{Credits}_i \\times \\text{GradePoints}_i)}{\\sum \\text{Credits}_i}$
+- **CGPA Formula:** $\\text{CGPA} = \\frac{\\sum (\\text{All Credits} \\times \\text{Earned Points})}{\\sum \\text{All Credits}}$
+- **CGPA to Percentage Conversion:** $\\text{Percentage} = \\text{CGPA} \\times 10$
+  - Target CGPA **${targetCGPA}** equates to **${pct}%** equivalence under BMU academic regulations.`;
+    }
+
+    // Default response
+    return `### 💡 BMU Academic Advisor Guidance:
+To reach your target CGPA of **${targetCGPA}** from your current **${currentCGPA}** across **${completedCredits}** credits:
+1. You need an SGPA of **${reqResult.requiredSGPA.toFixed(2)}** in this semester's **${totalSemCredits}** credits.
+2. ${reqResult.statusMessage}
+3. Check the **[End-Sem Planner]** tab to view the exact marks required out of 50 for each subject based on your current internal scores!
+4. Feel free to ask: *"What if the exam mean drops to 50?"*, *"Which subject is highest priority?"*, or *"Explain relative grading bell curve."*`;
+  }
+
+  // Call official Gemini API if key is supplied
+  async callGeminiAPI(userPrompt, data) {
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${this.geminiApiKey}`;
+
+    const systemInstruction = `You are the specialized AI Academic Advisor for BML Munjal University (BMU), specifically for B.Tech Computer Science & Engineering students.
+BMU uses a 10-point relative grading scale: A+ (10), A (9), B+ (8), B (7), C+ (6), C (5), D (4, minimum pass), F (0).
+Courses evaluate 50% Internal Assessment + 50% End-Term Exam (Total 100).
+Grades follow a normal distribution bell curve with Mean (mu) and Standard Deviation (sigma).
+Current student context:
+Current CGPA: ${data.currentCGPA || 7.5}, Completed Credits: ${data.completedCredits || 40}, Target CGPA: ${data.targetCGPA || 8.5}.
+Be concise, encouraging, mathematically accurate, and provide concrete mark targets and study priorities.`;
+
+    const body = {
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: `${systemInstruction}\n\nStudent Query: ${userPrompt}` }]
+        }
+      ]
+    };
+
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+
+    if (!res.ok) {
+      throw new Error(`Gemini API error: ${res.status} ${res.statusText}`);
+    }
+
+    const json = await res.json();
+    return json.candidates?.[0]?.content?.parts?.[0]?.text;
+  }
 }
-}
+
