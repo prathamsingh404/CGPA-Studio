@@ -1,0 +1,7 @@
+{
+  "name": "cgpa-studio",
+  "version": "1.0.0",
+  "description": "CGPA Studio • BMU B.Tech CSE Relative Grading CGPA Calculator and AI End-Sem Planner",
+  "type": "module",
+  "main": "server.js"
+}
