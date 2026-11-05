@@ -49,3 +49,44 @@ export function calculateCohortStats(marksArray) {
     median: Math.round(median * 10) / 10
   };
 }
+
+// Compute Grade Boundaries (Cutoffs) for given Mean and Standard Deviation
+export function computeGradeCutoffs(mean, sd, isAbsolute = false) {
+  if (isAbsolute) {
+    return BMU_GRADE_SCALE.map((item, idx, arr) => {
+      const min = item.absoluteMin;
+      const nextItem = arr[idx - 1];
+      const max = nextItem ? nextItem.absoluteMin - 1 : 100;
+      return {
+        ...item,
+        minMarks: min,
+        maxMarks: max,
+        displayRange: `${min} - ${max}`,
+        method: "Absolute (Cohort < 30)"
+      };
+    });
+  }
+
+  // Statistical Relative Grading cutoffs based on BMU Grade Moderation guidelines
+  // Cutoff marks: Mean + (Z * SD), bounded between 0 and 100
+  // Pass threshold D is capped at a sensible absolute floor (usually 35-40)
+  const cutoffs = [];
+  const minPassThreshold = 35; // Minimum passing total score at BMU
+
+  // Order from top grade (A+) to F
+  for (let i = 0; i < BMU_GRADE_SCALE.length; i++) {
+    const scale = BMU_GRADE_SCALE[i];
+    let minMarks;
+
+    if (scale.grade === "A+") {
+      minMarks = Math.min(98, Math.max(82, Math.round(mean + 1.5 * sd)));
+    } else if (scale.grade === "A") {
+      minMarks = Math.min(90, Math.max(72, Math.round(mean + 1.0 * sd)));
+    } else if (scale.grade === "B+") {
+      minMarks = Math.min(82, Math.max(62, Math.round(mean + 0.5 * sd)));
+    } else if (scale.grade === "B") {
+      minMarks = Math.min(74, Math.max(52, Math.round(mean - 0.2 * sd)));
+    } else if (scale.grade === "C+") {
+      minMarks = Math.min(65, Math.max(45, Math.round(mean - 0.8 * sd)));
+  return cutoffs;
+}
