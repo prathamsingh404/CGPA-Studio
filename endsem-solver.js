@@ -216,5 +216,30 @@ export function solveEndSemMarks({
     let requiredEndSemRaw = minMarksNeeded - s.internal;
 
     if (requiredEndSemRaw <= 0) {
+      s.requiredEndSem = 0;
+      s.note = "Already Secured! (Internal marks exceed cutoff)";
+      s.riskLevel = "SAFE";
+      s.safetyBuffer = Math.abs(requiredEndSemRaw);
+    } else if (requiredEndSemRaw > s.maxEndSem) {
+      s.requiredEndSem = s.maxEndSem;
+      s.note = `Mathematically unachievable for Grade ${s.targetGrade}. Max possible end-sem is ${s.maxEndSem}.`;
+      s.riskLevel = "CRITICAL";
+      s.safetyBuffer = 0;
+    } else {
+      s.requiredEndSem = Math.round(requiredEndSemRaw * 10) / 10;
+      s.safetyBuffer = Math.round((s.maxEndSem - s.requiredEndSem) * 10) / 10;
+
+      const difficultyPct = (s.requiredEndSem / s.maxEndSem) * 100;
+      if (difficultyPct >= 85) {
+        s.riskLevel = "HIGH";
+        s.note = `Need ${s.requiredEndSem}/${s.maxEndSem} (${Math.round(difficultyPct)}% in End-Sem). High accuracy required!`;
+      } else if (difficultyPct >= 65) {
+        s.riskLevel = "MODERATE";
+        s.note = `Need ${s.requiredEndSem}/${s.maxEndSem} (${Math.round(difficultyPct)}%). Standard preparation needed.`;
+      } else {
+        s.riskLevel = "LOW";
+        s.note = `Need ${s.requiredEndSem}/${s.maxEndSem} (${Math.round(difficultyPct)}%). Very comfortable margin.`;
+      }
+    }
   return { targetSGPA, subjectPlans };
 }
