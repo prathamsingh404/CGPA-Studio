@@ -158,4 +158,36 @@ export const BMU_GRADE_SCALE = [
   { grade: "D",  points: 4,  label: "Minimum Pass", percentileDesc: "Passing cutoff (Mean - 2.0σ, Min 35-40)", defaultCutoffZ: -2.0, absoluteMin: 40 },
   { grade: "F",  points: 0,  label: "Fail / Repeat", percentileDesc: "Below pass mark or < Mean - 2.0σ", defaultCutoffZ: -999, absoluteMin: 0 }
 ];
+
+// Presets for Exam Difficulty & Relative Grading Curve
+export const RELATIVE_PRESETS = {
+  moderate: {
+    id: "moderate",
+    label: "Moderate Exam (Standard BMU Section)",
+    description: "Balanced paper. Class Mean ≈ 62, Std Dev ≈ 14.",
+    mean: 62,
+    sd: 14
+  },
+  tough: {
+    id: "tough",
+    label: "Tough / Rigorous Exam (Lower Cutoffs)",
+    description: "Challenging paper. Class Mean drops to ≈ 48, Std Dev ≈ 13. Easier to get top grades with lower raw marks!",
+    mean: 48,
+    sd: 13
+  },
+  easy: {
+    id: "easy",
+    label: "High Scoring / Easy Exam (Higher Cutoffs)",
+    description: "High scoring section. Class Mean ≈ 75, Std Dev ≈ 11. Requires very high raw marks for A/A+.",
+    mean: 75,
+    sd: 11
+  },
+  custom: {
+    id: "custom",
+    label: "Custom Cohort Parameters",
+    description: "Specify your section's exact estimated mean and standard deviation.",
+    mean: 60,
+    sd: 15
+  }
 };
+
