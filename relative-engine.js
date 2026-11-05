@@ -108,5 +108,23 @@ export function computeGradeCutoffs(mean, sd, isAbsolute = false) {
     if (cutoffs[i].rawMin <= cutoffs[i + 1].rawMin) {
       cutoffs[i].rawMin = cutoffs[i + 1].rawMin + 2;
     }
-  return cutoffs;
+  }
+
+  // Final formatted list with min and max
+  return cutoffs.map((item, idx, arr) => {
+    const minMarks = Math.min(100, Math.max(0, item.rawMin));
+    const nextItem = arr[idx - 1];
+    const maxMarks = nextItem ? Math.max(minMarks, nextItem.rawMin - 1) : 100;
+
+    return {
+      ...item,
+      minMarks: minMarks,
+      maxMarks: maxMarks,
+      displayRange: item.grade === "F" ? `< ${arr[idx - 1].rawMin}` : `${minMarks} - ${maxMarks}`,
+      method: "Statistical Normal Distribution"
+    };
+  });
 }
+
+// Determine Grade from Total Marks
+export function evaluateGrade(totalMarks, cutoffs) {
