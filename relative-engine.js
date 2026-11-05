@@ -9,3 +9,11 @@ export function standardNormalCDF(x) {
   return x > 0 ? 1.0 - prob : prob;
 }
 
+// Gaussian probability density function (PDF)
+export function normalPDF(x, mean, sd) {
+  if (sd <= 0) return 0;
+  const factor = 1 / (sd * Math.sqrt(2 * Math.PI));
+  const exponent = -Math.pow(x - mean, 2) / (2 * Math.pow(sd, 2));
+  return factor * Math.exp(exponent);
+}
+
