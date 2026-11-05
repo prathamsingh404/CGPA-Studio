@@ -1,4 +1,5 @@
 import { BMU_GRADE_SCALE } from './curriculum.js';
+import { evaluateGrade } from './relative-engine.js';
 
 // Calculate SGPA for a given list of courses with grade points
 export function calculateSGPA(courses) {
@@ -72,4 +73,53 @@ export function calculateRequiredSGPA(currentCGPA, completedCredits, targetCGPA,
     feasibility,
     statusMessage
   };
+}
+
+// Reverse solve required end-semester marks for individual subjects
+export function solveEndSemMarks({
+  currentCGPA,
+  completedCredits,
+  targetCGPA,
+  courses,
+  cutoffs,
+  strategy = "credit_priority" // 'balanced', 'credit_priority', 'internal_strength'
+}) {
+  const totalSemCredits = courses.reduce((sum, c) => sum + (Number(c.credits) || 0), 0);
+  const reqResult = calculateRequiredSGPA(currentCGPA, completedCredits, targetCGPA, totalSemCredits);
+  const targetSGPA = Math.min(10.0, Math.max(4.0, reqResult.requiredSGPA));
+
+  // Clone courses and calculate internal percentage
+  const subjectPlans = courses.map((c, index) => {
+    const credits = Number(c.credits) || 3;
+    const maxInternal = Number(c.maxInternal) || 50;
+    const maxEndSem = Number(c.maxEndSem) || 50;
+    const internal = Math.min(maxInternal, Math.max(0, Number(c.internalMarks) || 0));
+
+    // Internal score as percentage of 50 or total
+    const internalPct = (internal / maxInternal) * 100;
+
+    return {
+      id: c.code || `course_${index}`,
+      index,
+      code: c.code || `CSE${index + 1}`,
+      name: c.name || `Subject ${index + 1}`,
+      credits,
+      type: c.type || "Core",
+      maxInternal,
+      maxEndSem,
+      internal,
+      internalPct,
+      // Default placeholder targets
+      targetGrade: "B+",
+      targetGP: 8,
+      requiredEndSem: 0,
+      safetyBuffer: 0,
+      riskLevel: "MODERATE"
+    };
+  });
+
+  // Sort helper based on strategy
+  if (strategy === "credit_priority") {
+    // Highest credits get highest priority for high grades (A+, A)
+  return { targetSGPA, subjectPlans };
 }
