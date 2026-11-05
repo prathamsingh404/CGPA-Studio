@@ -463,6 +463,83 @@
               <!-- Dynamic step content rendered by JS -->
             </div>
           </div>
+
+          <!-- Deep Academic Analysis Output -->
+          <div class="panel" id="aiAnalysisResultsPanel">
+            <h3 class="panel-title" style="margin-bottom: 1rem;">
+              🧠 Executive GPA Analysis &amp; Vulnerability Matrix
+            </h3>
+            <div id="aiSummaryBox" style="font-size: 0.92rem; line-height: 1.6; margin-bottom: 1rem;">
+              Run the End-Sem Planner to generate your complete executive briefing.
+            </div>
+          </div>
+        </div>
+
+        <!-- Conversational Chatbot Sidecar -->
+        <div>
+          <div class="chat-container">
+            <div style="padding: 0.85rem 1rem; background: var(--surface); border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+              <div style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 800; display: flex; align-items: center; gap: 0.4rem;">
+                <span class="status-dot"></span>
+                BMU ACADEMIC COPILOT
+              </div>
+              <button class="btn btn-sm" onclick="configureApiKey()" title="Configure Gemini API Key (Optional)">
+                🔑 API Key
+              </button>
+            </div>
+
+            <div class="chip-container">
+              <button class="chip-btn" onclick="sendQuickPrompt('Explain how BMU relative grading works')">BMU Relative Grading?</button>
+              <button class="chip-btn" onclick="sendQuickPrompt('Which courses carry highest credit risk?')">Highest Credit Risk?</button>
+              <button class="chip-btn" onclick="sendQuickPrompt('What if the paper is tough and mean drops to 50?')">Paper is Tough?</button>
+              <button class="chip-btn" onclick="sendQuickPrompt('How do I convert my CGPA to percentage?')">CGPA to %?</button>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+              <div class="message-bubble message-ai">
+                <strong>Hello! I am your BMU Academic Advisor.</strong><br>
+                I can help analyze your B.Tech CSE coursework, model relative grading bell curves, and calculate the exact minimum marks you need on each end-sem exam to secure your target CGPA.<br><br>
+                Ask me any question or click <strong>"⚡ Plan My End-Sem Marks"</strong> to step through your semester!
+              </div>
+            </div>
+
+            <form class="chat-input-bar" id="chatForm" onsubmit="handleChatSubmit(event)">
+              <input type="text" id="chatInput" class="input-field" placeholder="Ask about relative grading, exam marks, or SGPA..." autocomplete="off" />
+              <button type="submit" class="btn btn-primary" style="padding: 0.6rem 1rem;">
+                Send
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <!-- Interactive Modal for Guided "One-at-a-Time" Flow -->
+  <div class="modal-overlay" id="wizardModal">
+    <div class="modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid var(--surface-alt); padding-bottom: 0.75rem;">
+        <div style="font-family: var(--font-mono); font-weight: 800; font-size: 0.9rem; text-transform: uppercase;">
+          ⚡ BMU End-Sem Planner • Interactive Interview
+        </div>
+        <button class="btn btn-sm" onclick="closeWizardModal()">✕ Close</button>
+      </div>
+
+      <div class="wizard-steps-indicator" id="modalWizardIndicators">
+        <div class="step-dot active" data-mstep="1"></div>
+        <div class="step-dot" data-mstep="2"></div>
+        <div class="step-dot" data-mstep="3"></div>
+        <div class="step-dot" data-mstep="4"></div>
+        <div class="step-dot" data-mstep="5"></div>
+      </div>
+
+      <div id="modalStepContent">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./app.js"></script>
 </body>
 </html>
+
