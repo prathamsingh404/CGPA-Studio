@@ -17,3 +17,35 @@ export function normalPDF(x, mean, sd) {
   return factor * Math.exp(exponent);
 }
 
+// Calculate empirical Mean and Sample Standard Deviation from raw marks array
+export function calculateCohortStats(marksArray) {
+  const validMarks = marksArray
+    .map(Number)
+    .filter(n => !isNaN(n) && n >= 0 && n <= 100);
+
+  if (validMarks.length === 0) {
+    return { count: 0, mean: 60, sd: 14, min: 0, max: 100, median: 60 };
+  }
+
+  const n = validMarks.length;
+  const sum = validMarks.reduce((acc, v) => acc + v, 0);
+  const mean = sum / n;
+
+  let variance = 0;
+  if (n > 1) {
+    variance = validMarks.reduce((acc, v) => acc + Math.pow(v - mean, 2), 0) / (n - 1);
+  }
+  const sd = Math.sqrt(variance) || 12;
+
+  const sorted = [...validMarks].sort((a, b) => a - b);
+  const median = n % 2 === 0 ? (sorted[n / 2 - 1] + sorted[n / 2]) / 2 : sorted[Math.floor(n / 2)];
+
+  return {
+    count: n,
+    mean: Math.round(mean * 10) / 10,
+    sd: Math.round(sd * 10) / 10,
+    min: sorted[0],
+    max: sorted[n - 1],
+    median: Math.round(median * 10) / 10
+  };
+}
