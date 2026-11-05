@@ -1,3 +1,5 @@
+// End-Sem Planning & Target CGPA Reverse Optimization Solver for BMU
+
 import { BMU_GRADE_SCALE } from './curriculum.js';
 import { evaluateGrade } from './relative-engine.js';
 
@@ -241,5 +243,20 @@ export function solveEndSemMarks({
         s.note = `Need ${s.requiredEndSem}/${s.maxEndSem} (${Math.round(difficultyPct)}%). Very comfortable margin.`;
       }
     }
-  return { targetSGPA, subjectPlans };
+
+    s.minTotalMarksNeeded = minMarksNeeded;
+    s.gradePoints = s.targetGP;
+  });
+
+  const projectedSemSGPA = calculateSGPA(subjectPlans);
+  const projectedCGPA = calculateUpdatedCGPA(currentCGPA, completedCredits, projectedSemSGPA, totalSemCredits);
+
+  return {
+    ...reqResult,
+    targetSGPA,
+    projectedSemSGPA,
+    projectedCGPA,
+    totalSemCredits,
+    subjectPlans
+  };
 }
