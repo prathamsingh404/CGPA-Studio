@@ -88,5 +88,25 @@ export function computeGradeCutoffs(mean, sd, isAbsolute = false) {
       minMarks = Math.min(74, Math.max(52, Math.round(mean - 0.2 * sd)));
     } else if (scale.grade === "C+") {
       minMarks = Math.min(65, Math.max(45, Math.round(mean - 0.8 * sd)));
+    } else if (scale.grade === "C") {
+      minMarks = Math.min(55, Math.max(40, Math.round(mean - 1.4 * sd)));
+    } else if (scale.grade === "D") {
+      minMarks = Math.max(minPassThreshold, Math.round(mean - 2.0 * sd));
+    } else {
+      // F Grade
+      minMarks = 0;
+    }
+
+    cutoffs.push({
+      ...scale,
+      rawMin: minMarks
+    });
+  }
+
+  // Ensure strict monotonicity (higher grade must have strictly higher cutoff)
+  for (let i = cutoffs.length - 2; i >= 0; i--) {
+    if (cutoffs[i].rawMin <= cutoffs[i + 1].rawMin) {
+      cutoffs[i].rawMin = cutoffs[i + 1].rawMin + 2;
+    }
   return cutoffs;
 }
