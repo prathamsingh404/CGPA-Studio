@@ -246,6 +246,93 @@
             <div style="font-size: 1.15rem; font-weight: 800;">
               Simulated Semester SGPA: <span id="simSemSGPADisplay" class="highlight-pink" style="font-size: 1.4rem;">9.24</span>
               &nbsp;|&nbsp;
+              Resulting CGPA: <span id="simCGPADisplay" style="font-size: 1.4rem; color: var(--accent-mint);">8.30</span>
+            </div>
+          </div>
+          <div>
+            <button class="btn btn-primary" onclick="switchTab('solver')">
+              Optimize End-Sem Marks For My Target &rarr;
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: RELATIVE BELL CURVE LAB             -->
+    <!-- ========================================== -->
+    <div id="tab-curve" class="tab-content" style="display: none;">
+      <div class="layout-two-col">
+        <!-- Main Chart Column -->
+        <div>
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <h2 class="panel-title">
+                  📈 BMU Relative Grading Gaussian Bell Curve
+                </h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">
+                  Grades are allocated via statistical distribution N(&mu;, &sigma;) across passing students.
+                </p>
+              </div>
+              <div class="badge-tag badge-mint" id="activeCurveModeBadge">
+                Normal Distribution Mode
+              </div>
+            </div>
+
+            <!-- Exam Difficulty Preset Buttons -->
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem;">
+              <button class="btn btn-sm btn-accent preset-btn active" data-preset="moderate" onclick="setRelativePreset('moderate')">
+                Moderate Exam (&mu;: 62, &sigma;: 14)
+              </button>
+              <button class="btn btn-sm preset-btn" data-preset="tough" onclick="setRelativePreset('tough')">
+                Tough Exam (&mu;: 48, &sigma;: 13)
+              </button>
+              <button class="btn btn-sm preset-btn" data-preset="easy" onclick="setRelativePreset('easy')">
+                High-Scoring (&mu;: 75, &sigma;: 11)
+              </button>
+              <button class="btn btn-sm preset-btn" data-preset="absolute" onclick="setRelativePreset('absolute')">
+                Absolute Scale (&lt; 30 Students)
+              </button>
+            </div>
+
+            <!-- Canvas Container -->
+            <div class="canvas-wrapper">
+              <canvas id="bellCurveCanvas" width="800" height="340"></canvas>
+            </div>
+
+            <!-- Curve Legend -->
+            <div class="curve-legend">
+              <div class="legend-item"><span class="legend-color-box" style="background:#00e599;"></span> <strong>A+ (10)</strong>: &ge; &mu; + 1.5&sigma;</div>
+              <div class="legend-item"><span class="legend-color-box" style="background:#38bdf8;"></span> <strong>A (9)</strong>: &mu; + 1.0&sigma;</div>
+              <div class="legend-item"><span class="legend-color-box" style="background:#818cf8;"></span> <strong>B+ (8)</strong>: &mu; + 0.5&sigma;</div>
+              <div class="legend-item"><span class="legend-color-box" style="background:#ffe600;"></span> <strong>B (7)</strong>: Class Median</div>
+              <div class="legend-item"><span class="legend-color-box" style="background:#fb923c;"></span> <strong>C+ (6)</strong></div>
+              <div class="legend-item"><span class="legend-color-box" style="background:#f87171;"></span> <strong>C (5)</strong></div>
+              <div class="legend-item"><span class="legend-color-box" style="background:#cbd5e1;"></span> <strong>D (4)</strong>: Pass Min</div>
+              <div class="legend-item"><span class="legend-color-box" style="background:#0a0a0a;"></span> <strong>F (0)</strong>: Fail</div>
+            </div>
+          </div>
+
+          <!-- Section Cohort Batch Marks Simulator -->
+          <div class="panel">
+            <h3 class="panel-title" style="margin-bottom: 0.75rem;">
+              👥 Real Section Cohort Marks Modeler
+            </h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+              Have actual scores from your classmates or quiz averages? Paste them comma-separated below to calculate your section's actual Mean, Standard Deviation, and cutoffs!
+            </p>
+            <div style="margin-bottom: 0.75rem;">
+              <textarea id="cohortRawInput" class="input-field" rows="3" style="font-family: var(--font-mono); font-size: 0.8rem;" placeholder="e.g. 78, 64, 55, 91, 82, 49, 73, 60, 58, 88, 70, 62, 45, 80..."></textarea>
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button class="btn btn-sm btn-primary" onclick="processCohortInput()">
+                Compute Cohort &mu; &amp; &sigma;
+              </button>
+              <button class="btn btn-sm" onclick="generateSimulatedCohort()">
+                🎲 Simulate 60 Student Section
+              </button>
+            </div>
   </div>
 </body>
 </html>
