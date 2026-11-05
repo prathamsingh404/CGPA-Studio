@@ -156,5 +156,40 @@ export function solveEndSemMarks({
   const baseGP = Math.min(10, Math.max(4, Math.round(targetSGPA)));
   subjectPlans.forEach(s => {
     const maxGP = getMaxAchievableGP(s);
+    s.targetGP = Math.min(baseGP, maxGP);
+  });
+
+  // Fine-tune allocation with a greedy adjustment until sum(credits * GP) >= totalPointsNeeded
+  let currentTotalPoints = subjectPlans.reduce((sum, s) => sum + s.credits * s.targetGP, 0);
+
+  // If we are below target, bump grades up in priority order
+  let attempts = 0;
+  while (currentTotalPoints < totalPointsNeeded && attempts < 50) {
+    attempts++;
+    let bumped = false;
+    for (let i = 0; i < subjectPlans.length; i++) {
+      const s = subjectPlans[i];
+      const maxGP = getMaxAchievableGP(s);
+      if (s.targetGP < 10 && s.targetGP < maxGP) {
+        s.targetGP += 1;
+        currentTotalPoints += s.credits;
+        bumped = true;
+        if (currentTotalPoints >= totalPointsNeeded) break;
+      }
+    }
+    if (!bumped) break; // Cannot bump any further
+  }
+
+  // If we exceeded target by a lot, we can ease off lower-credit courses
+  attempts = 0;
+  while (currentTotalPoints - totalPointsNeeded >= 1.5 && attempts < 50) {
+    attempts++;
+    let dropped = false;
+    // Walk from lowest priority backwards
+    for (let i = subjectPlans.length - 1; i >= 0; i--) {
+      const s = subjectPlans[i];
+      if (s.targetGP > 4) {
+        const potentialDrop = s.credits;
+        if (currentTotalPoints - potentialDrop >= totalPointsNeeded - 0.1) {
   return { targetSGPA, subjectPlans };
 }
