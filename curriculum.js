@@ -103,6 +103,18 @@ export const BMU_PROGRAMS = {
       8: {
         sem: 8,
         title: "Semester VIII (Practice School / Thesis)",
+        credits: 12,
+        courses: [
+          { code: "PS201", name: "Practice School / Full-Semester Corporate Internship", credits: 12, type: "Industry Immersion", maxInternal: 100, maxEndSem: 0 }
+        ]
+      }
+    }
+  },
+  ai_ds: {
+    id: "ai_ds",
+    name: "B.Tech CSE with AI & Data Science",
+    school: "School of Engineering & Technology",
+    university: "BML Munjal University, Gurugram",
     }
   }
 };
