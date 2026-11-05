@@ -393,6 +393,76 @@
             <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">
               Calculates the exact minimum marks you must score in each End-Sem exam out of 50 to hit your target CGPA of <strong id="solverTargetCGPAText">8.50</strong>.
             </p>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+            <label class="input-label" style="margin-bottom: 0;">Optimization Strategy:</label>
+            <select id="solverStrategySelect" class="select-field" style="width: 220px;" onchange="recalculateSolver()">
+              <option value="credit_priority" selected>Credit Priority (Focus 4-Cr)</option>
+              <option value="balanced">Balanced Effort</option>
+              <option value="internal_strength">Internal Strength Optimized</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Strategy Feasibility Alert Box -->
+        <div id="solverAlertBox" style="margin-bottom: 1.5rem; padding: 1.25rem; border: 2px solid var(--border-color); border-radius: var(--radius-sm); background: var(--surface-alt); box-shadow: var(--shadow-sm);">
+          <!-- Filled by solver -->
+        </div>
+
+        <!-- Reverse Solved Subject Table -->
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Course</th>
+                <th style="width: 80px;">Credits</th>
+                <th style="width: 140px;">Internal (/50)</th>
+                <th style="width: 110px;">Target Grade</th>
+                <th style="width: 90px;">Grade Pts</th>
+                <th style="width: 170px;">Min End-Sem Needed (/50)</th>
+                <th style="width: 130px;">Safety Buffer</th>
+                <th style="width: 110px;">Risk Level</th>
+                <th>Strategic Note</th>
+              </tr>
+            </thead>
+            <tbody id="solverTableBody">
+              <!-- Populated by solveEndSemMarks -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Recommendations Grid -->
+        <div style="margin-top: 1.5rem; padding: 1.25rem; border: 2px solid var(--border-color); border-radius: var(--radius-sm); background: var(--surface);">
+          <h3 style="font-size: 1rem; font-weight: 800; margin-bottom: 0.75rem; text-transform: uppercase; font-family: var(--font-mono);">
+            💡 Strategic Preparation Directives for BMU End-Sem
+          </h3>
+          <ul id="solverRecommendationsList" style="padding-left: 1.25rem; font-size: 0.88rem; line-height: 1.7;">
+            <!-- Populated dynamically -->
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: AI ADVISOR & CHAT COPILOT          -->
+    <!-- ========================================== -->
+    <div id="tab-advisor" class="tab-content" style="display: none;">
+      <div class="layout-two-col">
+        <!-- Guided One-at-a-Time Planner Box (Matches Screenshot) -->
+        <div>
+          <div class="wizard-box">
+            <div class="wizard-steps-indicator" id="wizardIndicators">
+              <div class="step-dot active" data-step="1"></div>
+              <div class="step-dot" data-step="2"></div>
+              <div class="step-dot" data-step="3"></div>
+              <div class="step-dot" data-step="4"></div>
+              <div class="step-dot" data-step="5"></div>
+            </div>
+
+            <div id="wizardStepContent">
+              <!-- Dynamic step content rendered by JS -->
+            </div>
+          </div>
   </div>
 </body>
 </html>
