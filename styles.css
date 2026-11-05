@@ -93,3 +93,68 @@ body {
   bottom: -200px;
   left: -100px;
   width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(0, 229, 153, 0.08) 0%, rgba(0, 216, 246, 0.05) 50%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+}
+
+/* Base Container */
+.app-container {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 1.25rem 1.5rem 4rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* Top Technical Nav Header */
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background-color: var(--surface);
+  border: 2px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-md);
+  margin-bottom: 1.75rem;
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.brand-icon {
+  width: 42px;
+  height: 42px;
+  background-color: var(--accent-yellow);
+  border: 2px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-weight: 900;
+  font-size: 1.2rem;
+  color: #000;
+}
+
+.brand-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.brand-title span.sub {
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
