@@ -88,6 +88,21 @@ export const BMU_PROGRAMS = {
           { code: "PRJ302", name: "Comprehensive Design Project II", credits: 3, type: "Experiential Project", maxInternal: 60, maxEndSem: 40 },
           { code: "PS101", name: "Practice School Preparation & Internship", credits: 2, type: "Internship Prep", maxInternal: 100, maxEndSem: 0 }
         ]
+      },
+      7: {
+        sem: 7,
+        title: "Semester VII (Advanced Specialization)",
+        credits: 16,
+        courses: [
+          { code: "CSE41X", name: "Program Elective IV (Deep Learning / MLOps)", credits: 3, type: "Advanced Elective", maxInternal: 50, maxEndSem: 50 },
+          { code: "CSE42X", name: "Program Elective V (Distributed Systems)", credits: 3, type: "Advanced Elective", maxInternal: 50, maxEndSem: 50 },
+          { code: "OPE401", name: "Open Elective III", credits: 3, type: "Open Elective", maxInternal: 50, maxEndSem: 50 },
+          { code: "PRJ401", name: "Capstone Major Project – Phase I", credits: 7, type: "Major Capstone", maxInternal: 70, maxEndSem: 30 }
+        ]
+      },
+      8: {
+        sem: 8,
+        title: "Semester VIII (Practice School / Thesis)",
     }
   }
 };
