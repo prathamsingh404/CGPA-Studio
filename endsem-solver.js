@@ -29,3 +29,21 @@ export function calculateUpdatedCGPA(currentCGPA, completedCredits, semSGPA, sem
   const totalPoints = (curC * compCr) + (sgpa * sCr);
   return Math.round((totalPoints / totalCredits) * 100) / 100;
 }
+
+// Calculate Required SGPA to hit Target CGPA
+export function calculateRequiredSGPA(currentCGPA, completedCredits, targetCGPA, semCredits) {
+  const curC = Number(currentCGPA) || 0;
+  const compCr = Number(completedCredits) || 0;
+  const target = Number(targetCGPA) || 0;
+  const sCr = Number(semCredits) || 0;
+
+  if (sCr <= 0) return { requiredSGPA: target, status: "NO_CREDITS" };
+
+  const totalCredits = compCr + sCr;
+  const totalPointsNeeded = target * totalCredits;
+  const currentPoints = curC * compCr;
+  const semPointsNeeded = totalPointsNeeded - currentPoints;
+  const reqSGPA = semPointsNeeded / sCr;
+
+  return { requiredSGPA: reqSGPA };
+}
