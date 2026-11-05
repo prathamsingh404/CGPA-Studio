@@ -183,6 +183,69 @@
 
     <!-- Main Navigation Tabs -->
     <nav class="tabs-navigation">
+      <button class="tab-btn active" data-tab="courses" onclick="switchTab('courses')">
+        📁 01. Semester Courses & Calculator
+      </button>
+      <button class="tab-btn" data-tab="curve" onclick="switchTab('curve')">
+        📊 02. Relative Bell Curve Lab
+      </button>
+      <button class="tab-btn" data-tab="solver" onclick="switchTab('solver')">
+        🎯 03. End-Sem Target Reverse Solver
+      </button>
+      <button class="tab-btn" data-tab="advisor" onclick="switchTab('advisor')">
+        🤖 04. AI Academic Advisor & Chat
+      </button>
+    </nav>
+
+    <!-- ========================================== -->
+    <!-- TAB 1: SEMESTER COURSES & LIVE CALCULATOR -->
+    <!-- ========================================== -->
+    <div id="tab-courses" class="tab-content active">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">
+              📚 Current Semester Courses
+              <span class="badge-tag badge-yellow" id="currentSemCreditsBadge">21 Credits Total</span>
+            </h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">
+              Adjust your Internal Marks (out of 50) and Projected End-Sem Marks (out of 50). Watch the relative grade update in real-time.
+            </p>
+          </div>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button class="btn btn-sm" onclick="addCustomSubject()">+ Add Subject</button>
+            <button class="btn btn-sm btn-accent" onclick="resetToCurriculumDefault()">Reset Curriculum</button>
+            <button class="btn btn-sm" onclick="fillSampleScores()">Preload High Scores</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table" id="coursesTable">
+            <thead>
+              <tr>
+                <th style="width: 100px;">Code</th>
+                <th>Course Name</th>
+                <th style="width: 80px;">Credits</th>
+                <th style="width: 180px;">Internal Marks (/50)</th>
+                <th style="width: 220px;">End-Sem Marks (/50)</th>
+                <th style="width: 100px;">Total (/100)</th>
+                <th style="width: 110px;">Relative Grade</th>
+                <th style="width: 60px;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="coursesTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Live Semester SGPA Banner -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding: 1rem; background-color: var(--surface-alt); border: 2px solid var(--border-color); border-radius: var(--radius-sm);">
+          <div>
+            <span style="font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Simulation Status</span>
+            <div style="font-size: 1.15rem; font-weight: 800;">
+              Simulated Semester SGPA: <span id="simSemSGPADisplay" class="highlight-pink" style="font-size: 1.4rem;">9.24</span>
+              &nbsp;|&nbsp;
   </div>
 </body>
 </html>
