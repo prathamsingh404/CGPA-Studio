@@ -558,3 +558,43 @@ body {
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+.data-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--surface-alt);
+  font-size: 0.88rem;
+  vertical-align: middle;
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tr:hover td {
+  background-color: rgba(255, 230, 0, 0.05);
+}
+
+.grade-pill {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 0.2rem 0.6rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  box-shadow: 1.5px 1.5px 0px var(--border-color);
+  display: inline-block;
+  min-width: 40px;
+  text-align: center;
+}
+
+.grade-A_plus { background-color: var(--accent-mint); color: #000; }
+.grade-A { background-color: #38bdf8; color: #000; }
+.grade-B_plus { background-color: #818cf8; color: #fff; }
+.grade-B { background-color: var(--accent-yellow); color: #000; }
+.grade-C_plus { background-color: #fb923c; color: #000; }
+.grade-C { background-color: #f87171; color: #fff; }
+.grade-D { background-color: #e2e8f0; color: #000; }
