@@ -140,6 +140,49 @@
           <span class="badge-tag badge-gray">CGPA × 10</span>
         </div>
         <div class="kpi-value" id="kpiPercentage">84.8%</div>
+        <div class="kpi-footer">
+          <span>Degree Progress:</span>
+          <strong id="kpiDegreeProgress">36%</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- Global Parameters Config Bar -->
+    <section class="panel" style="padding: 1.25rem 1.5rem; margin-bottom: 1.75rem;">
+      <div class="form-row" style="margin-bottom: 0;">
+        <div>
+          <label class="input-label" for="inputCurrentCGPA">Your Current CGPA</label>
+          <input type="number" id="inputCurrentCGPA" class="input-field" step="0.01" min="0" max="10" value="7.82" />
+        </div>
+        <div>
+          <label class="input-label" for="inputCompletedCredits">Credits Earned So Far</label>
+          <input type="number" id="inputCompletedCredits" class="input-field" step="1" min="0" max="172" value="42" />
+        </div>
+        <div>
+          <label class="input-label" for="inputTargetCGPA">Desired Target CGPA</label>
+          <input type="number" id="inputTargetCGPA" class="input-field" step="0.01" min="0" max="10" value="8.50" />
+        </div>
+        <div>
+          <label class="input-label" for="selectProgramSemester">BMU CSE Semester</label>
+          <select id="selectProgramSemester" class="select-field">
+            <option value="cse-1">Semester 1 (Foundation - 20 Cr)</option>
+            <option value="cse-2">Semester 2 (Foundation - 20 Cr)</option>
+            <option value="cse-3" selected>Semester 3 (Computing Core - 21 Cr)</option>
+            <option value="cse-4">Semester 4 (Systems & OS - 21 Cr)</option>
+            <option value="cse-5">Semester 5 (AI Spine & Tracks - 20 Cr)</option>
+            <option value="cse-6">Semester 6 (Security & Tracks - 21 Cr)</option>
+            <option value="cse-7">Semester 7 (Capstone Phase I - 16 Cr)</option>
+            <option value="cse-8">Semester 8 (Practice School - 12 Cr)</option>
+            <option value="ai_ds-3">AI & Data Science (Sem 3 - 21 Cr)</option>
+            <option value="ai_ds-4">AI & Data Science (Sem 4 - 21 Cr)</option>
+            <option value="custom">Custom Semester (Manual Setup)</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Navigation Tabs -->
+    <nav class="tabs-navigation">
   </div>
 </body>
 </html>
