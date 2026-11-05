@@ -383,3 +383,48 @@ body {
   gap: 1.25rem;
   margin-bottom: 2rem;
 }
+
+.kpi-card {
+  background-color: var(--surface);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.15s ease;
+}
+
+.kpi-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.kpi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.kpi-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.kpi-value {
+  font-size: 2.25rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.kpi-footer {
+  font-size: 0.78rem;
