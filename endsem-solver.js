@@ -121,5 +121,40 @@ export function solveEndSemMarks({
   // Sort helper based on strategy
   if (strategy === "credit_priority") {
     // Highest credits get highest priority for high grades (A+, A)
+    subjectPlans.sort((a, b) => b.credits - a.credits || b.internalPct - a.internalPct);
+  } else if (strategy === "internal_strength") {
+    // Best internal marks get pushed for A+, struggling ones for safe passing
+    subjectPlans.sort((a, b) => b.internalPct - a.internalPct);
+  }
+
+  // Target points needed across semester: TargetSGPA * totalCredits
+  const totalPointsNeeded = targetSGPA * totalSemCredits;
+
+  // Available grade point options (10 down to 4)
+  const availablePoints = [10, 9, 8, 7, 6, 5, 4];
+
+  // Helper to find cutoff for given points
+  function getCutoffForPoints(pts) {
+    return cutoffs.find(c => c.points === pts) || cutoffs[cutoffs.length - 1];
+  }
+
+  // Check what max possible grade is for a subject given its internal marks
+  function getMaxAchievableGP(subj) {
+    // Max total marks possible = internal + maxEndSem
+    const maxPossibleTotal = subj.internal + subj.maxEndSem;
+    for (const pts of availablePoints) {
+      const cut = getCutoffForPoints(pts);
+      if (maxPossibleTotal >= cut.minMarks) {
+        return pts;
+      }
+    }
+    return 4; // At least D
+  }
+
+  // Initial allocation: try to give each subject a baseline grade point
+  // Start with closest integer to targetSGPA
+  const baseGP = Math.min(10, Math.max(4, Math.round(targetSGPA)));
+  subjectPlans.forEach(s => {
+    const maxGP = getMaxAchievableGP(s);
   return { targetSGPA, subjectPlans };
 }
