@@ -124,6 +124,38 @@ export const BMU_PROGRAMS = {
         courses: [
           { code: "AID201", name: "Data Structures & Computational Thinking", credits: 4, type: "Core", maxInternal: 50, maxEndSem: 50 },
           { code: "MTH201", name: "Linear Algebra & Optimization for AI", credits: 4, type: "Math Core", maxInternal: 50, maxEndSem: 50 },
+          { code: "AID202", name: "Data Wrangling & Exploratory Analysis", credits: 4, type: "Core DS", maxInternal: 50, maxEndSem: 50 },
+          { code: "CSE203", name: "Object Oriented Programming (Java/Python)", credits: 4, type: "Programming", maxInternal: 50, maxEndSem: 50 },
+          { code: "HUM201", name: "Economics for Engineers", credits: 3, type: "Management", maxInternal: 50, maxEndSem: 50 },
+          { code: "HUM202", name: "Ethics in Artificial Intelligence", credits: 2, type: "VAC", maxInternal: 50, maxEndSem: 50 }
+        ]
+      },
+      4: {
+        sem: 4,
+        title: "Semester IV (Machine Learning & DB)",
+        credits: 21,
+        courses: [
+          { code: "AID203", name: "Supervised & Unsupervised Machine Learning", credits: 4, type: "Core ML", maxInternal: 50, maxEndSem: 50 },
+          { code: "CSE204", name: "Database & Data Warehouse Systems", credits: 4, type: "Core", maxInternal: 50, maxEndSem: 50 },
+          { code: "CSE205", name: "Operating Systems & Virtualization", credits: 4, type: "Systems", maxInternal: 50, maxEndSem: 50 },
+          { code: "MTH202", name: "Multivariate Statistics & Inference", credits: 4, type: "Math Core", maxInternal: 50, maxEndSem: 50 },
+          { code: "AID204", name: "Data Visualization & Dashboarding", credits: 3, type: "Hands-on", maxInternal: 50, maxEndSem: 50 },
+          { code: "PRJ202", name: "Applied AI Domain Mini-Project", credits: 2, type: "Project", maxInternal: 60, maxEndSem: 40 }
+        ]
+      }
     }
   }
+};
+
+// BMU 10-Point Grade Table
+export const BMU_GRADE_SCALE = [
+  { grade: "A+", points: 10, label: "Outstanding", percentileDesc: "Top ~5-10% of class", defaultCutoffZ: 1.5, absoluteMin: 93 },
+  { grade: "A",  points: 9,  label: "Excellent", percentileDesc: "Next ~15% (Mean + 1.0σ)", defaultCutoffZ: 1.0, absoluteMin: 85 },
+  { grade: "B+", points: 8,  label: "Very Good", percentileDesc: "Next ~20% (Mean + 0.5σ)", defaultCutoffZ: 0.5, absoluteMin: 75 },
+  { grade: "B",  points: 7,  label: "Good (Median)", percentileDesc: "Core class center (Mean - 0.2σ to +0.5σ)", defaultCutoffZ: -0.2, absoluteMin: 65 },
+  { grade: "C+", points: 6,  label: "Adequate", percentileDesc: "Above passing (Mean - 0.8σ)", defaultCutoffZ: -0.8, absoluteMin: 55 },
+  { grade: "C",  points: 5,  label: "Average", percentileDesc: "Passable tier (Mean - 1.4σ)", defaultCutoffZ: -1.4, absoluteMin: 46 },
+  { grade: "D",  points: 4,  label: "Minimum Pass", percentileDesc: "Passing cutoff (Mean - 2.0σ, Min 35-40)", defaultCutoffZ: -2.0, absoluteMin: 40 },
+  { grade: "F",  points: 0,  label: "Fail / Repeat", percentileDesc: "Below pass mark or < Mean - 2.0σ", defaultCutoffZ: -999, absoluteMin: 0 }
+];
 };
