@@ -428,3 +428,43 @@ body {
 
 .kpi-footer {
   font-size: 0.78rem;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.kpi-card.highlight-pink {
+  border-left: 8px solid var(--accent-pink);
+}
+
+.kpi-card.highlight-yellow {
+  border-left: 8px solid var(--accent-yellow);
+}
+
+.kpi-card.highlight-mint {
+  border-left: 8px solid var(--accent-mint);
+}
+
+.kpi-card.highlight-cyan {
+  border-left: 8px solid var(--accent-cyan);
+}
+
+/* Layout Split Sections */
+.layout-two-col {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 1.75rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .layout-two-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Panel Containers */
+.panel {
+  background-color: var(--surface);
+  border: 2px solid var(--border-color);
