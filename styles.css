@@ -268,3 +268,43 @@ body {
 .btn-icon {
   padding: 0.5rem;
   width: 38px;
+  height: 38px;
+}
+
+/* Hero Banner (TIDE Aura Style) */
+.hero-banner {
+  margin-bottom: 2rem;
+  padding: 2.25rem 2rem;
+  background-color: var(--surface);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-tag {
+  display: inline-flex;
+  margin-bottom: 1.25rem;
+}
+
+.hero-title {
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  margin-bottom: 1rem;
+}
+
+.hero-title span.highlight-pink {
+  color: var(--accent-pink);
+  position: relative;
+  display: inline-block;
+}
+
+.hero-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  max-width: 780px;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
