@@ -1,5 +1,5 @@
 import { BMU_GRADE_SCALE, RELATIVE_PRESETS } from './curriculum.js';
-import { solveEndSemMarks } from './endsem-solver.js';
+import { solveEndSemMarks, calculateRequiredSGPA } from './endsem-solver.js';
 
 export class BMUAIAdvisor {
   constructor(geminiApiKey = null) {
@@ -61,6 +61,51 @@ export class BMUAIAdvisor {
 
     const recommendations = [
       `**Prioritize 4-Credit Powerhouses:** Subjects like ${highCreditCourses.map(c => `\`${c.name}\` (${c.credits}cr)`).join(', ')} carry **${Math.round((highCreditCourses.reduce((s, c) => s + c.credits, 0) / totalSemCredits) * 100)}%** of your total semester weight. Getting an A+ here gives 4x the impact of a 1-credit lab.`,
+      `**Relative Grading Advantage:** Under BMU's statistical model (${RELATIVE_PRESETS[presetId]?.label || 'Moderate Exam'}), if the cohort finds the end-sem tough, the class mean ($\mu$) will drop, lowering the raw marks required for Grade A and B+. Keep answering all high-weightage questions even if challenging.`,
+      `**Watch Out for \`${highestRiskSubject ? highestRiskSubject.name : 'Struggling Subject'}\`:** With current internals of ${highestRiskSubject ? highestRiskSubject.internal : 0}/50, you need at least **${highestRiskSubject ? highestRiskSubject.requiredEndSem : 35}/50** in End-Sem to secure your target ${highestRiskSubject ? highestRiskSubject.targetGrade : 'B+'}. Make this your revision priority.`,
+      `**Safety Buffer:** Aim for +4 marks above the calculated minimum cutoff in each end-sem exam to safeguard against statistical clustering at the grade boundaries.`
+    ];
+
+    return {
+      solverResult,
+      assessmentSummary,
+      recommendations,
+      highestRiskSubject
+    };
+  }
+
+  // Answer free-form chat query
+  async askAdvisor(userPrompt, contextData) {
+    // If user provided a Gemini API Key, try live Gemini model
+    if (this.geminiApiKey) {
+      try {
+        const geminiReply = await this.callGeminiAPI(userPrompt, contextData);
+        if (geminiReply) return geminiReply;
+      } catch (err) {
+        console.warn("Gemini API call failed, falling back to local academic advisor:", err);
+      }
+    }
+
+    // High intelligence local academic reasoning engine
+    return this.generateLocalAIResponse(userPrompt, contextData);
+  }
+
+  generateLocalAIResponse(prompt, data) {
+    const p = prompt.toLowerCase();
+    const {
+      currentCGPA = 7.5,
+      completedCredits = 40,
+      targetCGPA = 8.5,
+      courses = [],
+      cutoffs = [],
+      presetId = "moderate"
+    } = data || {};
+
+    const totalSemCredits = courses.reduce((sum, c) => sum + (Number(c.credits) || 0), 0) || 20;
+    const reqResult = calculateRequiredSGPA(currentCGPA, completedCredits, targetCGPA, totalSemCredits);
+    const solverResult = solveEndSemMarks({
+      currentCGPA,
+      completedCredits,
   return { assessmentSummary, recommendations };
 }
 }
