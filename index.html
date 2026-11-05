@@ -333,6 +333,66 @@
                 🎲 Simulate 60 Student Section
               </button>
             </div>
+          </div>
+        </div>
+
+        <!-- Sidebar Column: Cutoff Boundaries & Stats -->
+        <div>
+          <div class="panel">
+            <h3 class="panel-title" style="margin-bottom: 1rem;">
+              📐 Statistical Parameters
+            </h3>
+
+            <div style="margin-bottom: 1rem;">
+              <label class="input-label" for="curveMeanInput">Class Mean (&mu;)</label>
+              <div class="slider-container">
+                <input type="range" id="curveMeanRange" class="custom-range" min="30" max="90" value="62" />
+                <input type="number" id="curveMeanInput" class="input-field" style="width: 75px;" value="62" />
+              </div>
+            </div>
+
+            <div style="margin-bottom: 1.25rem;">
+              <label class="input-label" for="curveSDInput">Standard Deviation (&sigma;)</label>
+              <div class="slider-container">
+                <input type="range" id="curveSDRange" class="custom-range" min="5" max="25" value="14" />
+                <input type="number" id="curveSDInput" class="input-field" style="width: 75px;" value="14" />
+              </div>
+            </div>
+
+            <div style="padding: 0.75rem; background: var(--surface-alt); border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); margin-bottom: 1.25rem;">
+              <div style="font-size: 0.75rem; font-family: var(--font-mono); text-transform: uppercase; color: var(--text-muted);">Inspect Course Score</div>
+              <select id="inspectCourseSelect" class="select-field" style="margin-top: 0.35rem;" onchange="updateCurveInspection()">
+                <!-- Populated dynamically -->
+              </select>
+              <div id="inspectedScoreDetails" style="margin-top: 0.5rem; font-size: 0.85rem; font-weight: 700;">
+                <!-- Filled dynamically -->
+              </div>
+            </div>
+
+            <h4 style="font-size: 0.9rem; font-weight: 800; text-transform: uppercase; margin-bottom: 0.5rem; font-family: var(--font-mono);">
+              Calculated Cutoff Ranges
+            </h4>
+            <div id="cutoffTableContainer">
+              <!-- Dynamically populated list of cutoffs -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: END-SEM TARGET REVERSE SOLVER      -->
+    <!-- ========================================== -->
+    <div id="tab-solver" class="tab-content" style="display: none;">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">
+              🎯 End-Sem Marks Reverse Solver
+            </h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">
+              Calculates the exact minimum marks you must score in each End-Sem exam out of 50 to hit your target CGPA of <strong id="solverTargetCGPAText">8.50</strong>.
+            </p>
   </div>
 </body>
 </html>
