@@ -106,6 +106,36 @@ export class BMUAIAdvisor {
     const solverResult = solveEndSemMarks({
       currentCGPA,
       completedCredits,
+      targetCGPA,
+      courses,
+      cutoffs,
+      strategy: "credit_priority"
+    });
+
+    if (p.includes("relative") || p.includes("grading") || p.includes("bell") || p.includes("curve")) {
+      return `### How BMU's Relative Grading System Works:
+1. **Statistical Normalization:** BMU uses a normal Gaussian distribution ($\mu, \sigma$) for courses with 30+ students.
+2. **Class Mean ($\mu$) Anchor:** The class average score anchors the **Grade B** (7 Grade Points) / **B+** boundary.
+3. **Cutoffs Formula:**
+   - **A+ (10 pts):** Total marks $\\ge \\mu + 1.5\\sigma$ (Top 5-10% cohort)
+   - **A (9 pts):** Between $\\mu + 1.0\\sigma$ and $\\mu + 1.5\\sigma$
+   - **B+ (8 pts):** Between $\\mu + 0.5\\sigma$ and $\\mu + 1.0\\sigma$
+   - **B (7 pts):** Around the class median
+   - **D (4 pts):** Minimum passing grade ($\ge 35$ or $\mu - 2.0\sigma$)
+4. **Key Advantage:** If an exam is notoriously tough (e.g. Mean drops to 48), scoring 68/100 can easily yield an **A** or **A+**, whereas in absolute grading it would only be a B!`;
+    }
+
+    if (p.includes("plan") || p.includes("end-sem") || p.includes("marks needed") || p.includes("target")) {
+      return `### 🎯 Your End-Sem Target Breakdown:
+- **Current CGPA:** ${currentCGPA} (${completedCredits} Credits)
+- **Target CGPA:** ${targetCGPA}
+- **Required Semester SGPA:** **${reqResult.requiredSGPA.toFixed(2)}**
+- **Feasibility:** ${reqResult.statusMessage}
+
+#### 📋 Minimum End-Sem Targets (Assuming 50 Internal + 50 End-Sem):
+${solverResult.subjectPlans.map(s => `- **${s.name}** (${s.credits} cr): Need **${s.requiredEndSem}/50** in End-Sem ➔ Target **Grade ${s.targetGrade}** (${s.targetGP} pts)`).join('\n')}
+
+💡 **Strategy Tip:** Put 60% of your prep time into your 4-credit courses (${courses.filter(c => c.credits >= 4).map(c => c.name).slice(0, 3).join(', ')}).`;
   return { assessmentSummary, recommendations };
 }
 }
