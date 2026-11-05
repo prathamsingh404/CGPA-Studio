@@ -74,6 +74,20 @@ export const BMU_PROGRAMS = {
           { code: "OPE301", name: "Open Elective I (Interdisciplinary)", credits: 3, type: "Open Elective", maxInternal: 50, maxEndSem: 50 },
           { code: "PRJ301", name: "AI Spine Applied Capstone Mini-Project", credits: 3, type: "Experiential Project", maxInternal: 60, maxEndSem: 40 }
         ]
+      },
+      6: {
+        sem: 6,
+        title: "Semester VI (Advanced Tech & Cyber)",
+        credits: 21,
+        courses: [
+          { code: "CSE304", name: "Cyber Security & Modern Cryptography", credits: 4, type: "Core Security", maxInternal: 50, maxEndSem: 50 },
+          { code: "CSE305", name: "Compiler Design & Code Optimization", credits: 3, type: "Core Theory", maxInternal: 50, maxEndSem: 50 },
+          { code: "CSE32X", name: "Program Elective II (Big Data / NLP)", credits: 3, type: "Track Elective", maxInternal: 50, maxEndSem: 50 },
+          { code: "CSE33X", name: "Program Elective III (IoT / Blockchain)", credits: 3, type: "Track Elective", maxInternal: 50, maxEndSem: 50 },
+          { code: "OPE302", name: "Open Elective II", credits: 3, type: "Open Elective", maxInternal: 50, maxEndSem: 50 },
+          { code: "PRJ302", name: "Comprehensive Design Project II", credits: 3, type: "Experiential Project", maxInternal: 60, maxEndSem: 40 },
+          { code: "PS101", name: "Practice School Preparation & Internship", credits: 2, type: "Internship Prep", maxInternal: 100, maxEndSem: 0 }
+        ]
     }
   }
 };
