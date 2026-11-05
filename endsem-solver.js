@@ -15,3 +15,17 @@ export function calculateSGPA(courses) {
   if (totalCredits === 0) return 0;
   return Math.round((totalWeightedPoints / totalCredits) * 100) / 100;
 }
+
+// Calculate Updated CGPA after semester completion
+export function calculateUpdatedCGPA(currentCGPA, completedCredits, semSGPA, semCredits) {
+  const curC = Number(currentCGPA) || 0;
+  const compCr = Number(completedCredits) || 0;
+  const sgpa = Number(semSGPA) || 0;
+  const sCr = Number(semCredits) || 0;
+
+  const totalCredits = compCr + sCr;
+  if (totalCredits === 0) return curC;
+
+  const totalPoints = (curC * compCr) + (sgpa * sCr);
+  return Math.round((totalPoints / totalCredits) * 100) / 100;
+}
