@@ -78,6 +78,68 @@
           🤖 Open AI Advisor
         </button>
       </div>
+    </section>
+
+    <!-- Top KPI Dashboard Cards -->
+    <section class="kpi-grid">
+      <!-- Card 1: Current CGPA -->
+      <div class="kpi-card highlight-yellow">
+        <div class="kpi-header">
+          <span class="kpi-label">Current Cumulative GPA</span>
+          <span class="badge-tag badge-gray" id="kpiCompletedCreditsBadge">42 Credits</span>
+        </div>
+        <div class="kpi-value" id="kpiCurrentCGPA">7.82</div>
+        <div class="kpi-footer">
+          <span>Completed Credits:</span>
+          <strong id="kpiCompletedCreditsText">42 / 172</strong>
+        </div>
+      </div>
+
+      <!-- Card 2: Target CGPA -->
+      <div class="kpi-card highlight-pink">
+        <div class="kpi-header">
+          <span class="kpi-label">Target CGPA Goal</span>
+          <span class="badge-tag badge-pink">Target</span>
+        </div>
+        <div class="kpi-value" id="kpiTargetCGPA">8.50</div>
+        <div class="kpi-footer">
+          <span>Goal Delta:</span>
+          <strong id="kpiDeltaCGPA">+0.68 needed</strong>
+        </div>
+      </div>
+
+      <!-- Card 3: Required SGPA -->
+      <div class="kpi-card highlight-mint">
+        <div class="kpi-header">
+          <span class="kpi-label">Required Sem SGPA</span>
+          <span class="badge-tag badge-mint" id="kpiFeasibilityBadge">ACHIEVABLE</span>
+        </div>
+        <div class="kpi-value" id="kpiRequiredSGPA">9.86</div>
+        <div class="kpi-footer">
+          <span id="kpiFeasibilityDesc">Achievable with top-tier focus</span>
+        </div>
+      </div>
+
+      <!-- Card 4: Projected CGPA -->
+      <div class="kpi-card highlight-cyan">
+        <div class="kpi-header">
+          <span class="kpi-label">Projected Cumulative</span>
+          <span class="badge-tag badge-cyan">Live Simulation</span>
+        </div>
+        <div class="kpi-value" id="kpiProjectedCGPA">8.48</div>
+        <div class="kpi-footer">
+          <span>Estimated Sem SGPA:</span>
+          <strong id="kpiCurrentSemSGPA">9.76</strong>
+        </div>
+      </div>
+
+      <!-- Card 5: BMU Equivalent Percentage -->
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-label">BMU Percentage Equiv.</span>
+          <span class="badge-tag badge-gray">CGPA × 10</span>
+        </div>
+        <div class="kpi-value" id="kpiPercentage">84.8%</div>
   </div>
 </body>
 </html>
