@@ -213,3 +213,58 @@ body {
 .btn {
   font-family: var(--font-sans);
   font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  padding: 0.55rem 1.15rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--surface);
+  color: var(--text-main);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.btn:hover {
+  transform: translate(-1.5px, -1.5px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn:active {
+  transform: translate(1.5px, 1.5px);
+  box-shadow: 1px 1px 0px var(--border-color);
+}
+
+.btn-primary {
+  background-color: var(--accent-pink);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-pink-hover);
+}
+
+.btn-accent {
+  background-color: var(--accent-yellow);
+  color: #000000;
+}
+
+.btn-mint {
+  background-color: var(--accent-mint);
+  color: #000000;
+}
+
+.btn-sm {
+  font-size: 0.75rem;
+  padding: 0.35rem 0.75rem;
+}
+
+.btn-icon {
+  padding: 0.5rem;
+  width: 38px;
