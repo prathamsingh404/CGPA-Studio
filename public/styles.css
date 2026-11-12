@@ -861,7 +861,7 @@ body {
   body {
     background: none;
   }
-  .top-header, .hero-banner, .tabs-navigation, .nav-controls, .btn, .chat-container, .modal-overlay {
+  .top-header, .hero-banner, .tabs-navigation, .nav-controls, .btn, .chat-container, .modal-overlay, .toast-banner {
     display: none !important;
   }
   .panel {
@@ -870,4 +870,96 @@ body {
     page-break-inside: avoid;
   }
 }
+
+/* Floating Toast Banner */
+.toast-banner {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 9999;
+  background-color: var(--surface);
+  color: var(--text-main);
+  border: 2px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1.25rem;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  transform: translateY(-80px);
+  opacity: 0;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.toast-banner.show {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.toast-banner.success {
+  border-left: 8px solid var(--accent-mint);
+}
+
+.toast-banner.error {
+  border-left: 8px solid var(--accent-red);
+}
+
+.toast-banner.info {
+  border-left: 8px solid var(--accent-cyan);
+}
+
+/* Academic Plan Cards in Cloud Modal */
+.plan-card-item {
+  background: var(--surface);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  padding: 1rem 1.15rem;
+  margin-bottom: 0.85rem;
+  transition: all 0.15s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.plan-card-item:hover {
+  transform: translate(-1.5px, -1.5px);
+  box-shadow: var(--shadow-md);
+}
+
+.plan-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.plan-card-title {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.plan-card-meta {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.plan-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 

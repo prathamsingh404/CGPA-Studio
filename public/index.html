@@ -32,11 +32,16 @@
       </div>
 
       <div class="nav-controls">
-        <button class="btn btn-primary" id="openWizardBtn">
-          ⚡ Plan My End-Sem Marks
+        <!-- Student Authentication & Cloud Sync Section -->
+        <div id="authNavContainer" style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+          <!-- Dynamically populated: Guest vs Logged In -->
+        </div>
+
+        <button class="btn btn-primary btn-sm" id="openWizardBtn">
+          ⚡ Plan End-Sem
         </button>
         <button class="btn btn-accent btn-sm" id="exportPlanBtn" title="Print or Save PDF Summary">
-          🖨️ Export Plan
+          🖨️ Export
         </button>
         <button class="btn btn-icon" id="themeToggleBtn" title="Toggle Dark/Light Mode">
           🌓
@@ -535,6 +540,127 @@
 
       <div id="modalStepContent">
         <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Alert -->
+  <div id="toastNotification" class="toast-banner"></div>
+
+  <!-- Student Authentication Modal (Sign In / Register) -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal-card" style="max-width: 440px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; border-bottom: 2px solid var(--surface-alt); padding-bottom: 0.75rem;">
+        <div style="font-family: var(--font-mono); font-weight: 800; font-size: 0.95rem; text-transform: uppercase;">
+          🎓 Student Portal • MongoDB Cloud
+        </div>
+        <button class="btn btn-sm" onclick="closeAuthModal()">✕</button>
+      </div>
+
+      <!-- Auth Mode Tabs -->
+      <div style="display: flex; gap: 0.5rem; margin-bottom: 1.25rem;">
+        <button class="btn btn-sm btn-accent active" id="authTabLogin" style="flex: 1;" onclick="switchAuthTab('login')">
+          Sign In
+        </button>
+        <button class="btn btn-sm" id="authTabRegister" style="flex: 1;" onclick="switchAuthTab('register')">
+          Create Account
+        </button>
+      </div>
+
+      <div id="authAlertBox" style="display: none; padding: 0.65rem 0.85rem; margin-bottom: 1rem; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 600;"></div>
+
+      <!-- Sign In Form -->
+      <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+        <div style="margin-bottom: 1rem;">
+          <label class="input-label" for="loginEmail">Email Address</label>
+          <input type="email" id="loginEmail" class="input-field" placeholder="student@example.com" required />
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+          <label class="input-label" for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" class="input-field" placeholder="••••••••" required />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">
+          Sign In to Cloud
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" style="display: none;" onsubmit="handleRegisterSubmit(event)">
+        <div style="margin-bottom: 1rem;">
+          <label class="input-label" for="regName">Full Name</label>
+          <input type="text" id="regName" class="input-field" placeholder="Pratham Singh" required />
+        </div>
+        <div style="margin-bottom: 1rem;">
+          <label class="input-label" for="regEmail">Email Address</label>
+          <input type="email" id="regEmail" class="input-field" placeholder="student@example.com" required />
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+          <label class="input-label" for="regPassword">Create Password (min. 6 characters)</label>
+          <input type="password" id="regPassword" class="input-field" placeholder="At least 6 characters" minlength="6" required />
+        </div>
+        <button type="submit" class="btn btn-mint" style="width: 100%;">
+          Create Account
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Save Academic Plan Modal -->
+  <div class="modal-overlay" id="savePlanModal">
+    <div class="modal-card" style="max-width: 480px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; border-bottom: 2px solid var(--surface-alt); padding-bottom: 0.75rem;">
+        <div style="font-family: var(--font-mono); font-weight: 800; font-size: 0.95rem; text-transform: uppercase;">
+          💾 Save Plan to MongoDB Atlas
+        </div>
+        <button class="btn btn-sm" onclick="closeSavePlanModal()">✕</button>
+      </div>
+
+      <form id="savePlanForm" onsubmit="handleSavePlanSubmit(event)">
+        <div style="margin-bottom: 1.25rem;">
+          <label class="input-label" for="planTitleInput">Academic Plan Name</label>
+          <input type="text" id="planTitleInput" class="input-field" placeholder="e.g., Semester 3 End-Sem Target (8.5 CGPA)" required />
+        </div>
+
+        <div style="background: var(--surface-alt); border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.85rem; margin-bottom: 1.5rem; font-size: 0.82rem; font-family: var(--font-mono); line-height: 1.6;">
+          <div>• <strong>Current CGPA:</strong> <span id="saveModalCurrentCGPA">7.82</span> (<span id="saveModalCredits">42</span> Credits)</div>
+          <div>• <strong>Target CGPA:</strong> <span id="saveModalTargetCGPA">8.50</span></div>
+          <div>• <strong>Semester:</strong> <span id="saveModalSemester">3</span> (<span id="saveModalCourseCount">6</span> Courses)</div>
+          <div>• <strong>Grading Preset:</strong> <span id="saveModalPreset">Moderate</span> (&mu;=<span id="saveModalMean">62</span>, &sigma;=<span id="saveModalSD">14</span>)</div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+          <button type="button" class="btn btn-sm" onclick="closeSavePlanModal()">Cancel</button>
+          <button type="submit" class="btn btn-sm btn-primary" id="saveNewPlanBtn">
+            💾 Save as New Plan
+          </button>
+          <button type="button" class="btn btn-sm btn-accent" id="updateLoadedPlanBtn" style="display: none;" onclick="handleUpdatePlanClick()">
+            🔄 Update Existing Plan
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Saved Cloud Plans List Modal -->
+  <div class="modal-overlay" id="cloudPlansModal">
+    <div class="modal-card" style="max-width: 680px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; border-bottom: 2px solid var(--surface-alt); padding-bottom: 0.75rem;">
+        <div>
+          <div style="font-family: var(--font-mono); font-weight: 800; font-size: 0.95rem; text-transform: uppercase;">
+            📂 My Saved Academic Plans
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">
+            Persisted securely in MongoDB Atlas under your student account.
+          </p>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn btn-sm btn-accent" onclick="refreshUserPlans()">🔄 Refresh</button>
+          <button class="btn btn-sm" onclick="closeCloudPlansModal()">✕</button>
+        </div>
+      </div>
+
+      <div id="cloudPlansListContainer" style="max-height: 420px; overflow-y: auto; padding-right: 0.25rem;">
+        <!-- Dynamically rendered list of academic plans -->
       </div>
     </div>
   </div>

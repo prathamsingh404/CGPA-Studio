@@ -1,5 +1,5 @@
-import { calculateSGPA, calculateUpdatedCGPA, calculateRequiredSGPA, solveEndSemMarks } from '../endsem-solver.js';
-import { computeGradeCutoffs } from '../relative-engine.js';
+import { calculateSGPA, calculateUpdatedCGPA, calculateRequiredSGPA, solveEndSemMarks } from '../public/endsem-solver.js';
+import { computeGradeCutoffs } from '../public/relative-engine.js';
 
 console.log('Testing End-Sem Solver...');
 const sgpa = calculateSGPA([{ credits: 4, gradePoints: 9 }, { credits: 4, gradePoints: 8 }]);

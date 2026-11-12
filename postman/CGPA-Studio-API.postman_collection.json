@@ -1,0 +1,449 @@
+{
+  "info": {
+    "_postman_id": "b3c9f82d-45a1-4d8e-9c71-cgpa-studio-2026",
+    "name": "CGPA Studio Backend API",
+    "description": "Comprehensive Postman collection for CGPA Studio Node.js + Express + MongoDB Atlas backend, covering Health Check, Authentication, and Academic Plans CRUD operations.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "testEmail",
+      "value": "student@example.com",
+      "type": "string"
+    },
+    {
+      "key": "testPassword",
+      "value": "studentPassword123",
+      "type": "string"
+    },
+    {
+      "key": "planId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Health Check",
+      "item": [
+        {
+          "name": "System & Database Health",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Health status response structure\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "    pm.expect(jsonData.message).to.eql(\"CGPA Studio API is running\");",
+                  "    pm.expect(jsonData).to.have.property(\"database\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "health"]
+            },
+            "description": "Checks Express server status and current MongoDB database connectivity."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Authentication",
+      "item": [
+        {
+          "name": "Register Student",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201 Created or 409 Conflict\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([201, 409]);",
+                  "});",
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.test(\"User created without password hash\", function () {",
+                  "        pm.expect(jsonData.success).to.be.true;",
+                  "        pm.expect(jsonData.data).to.have.property(\"_id\");",
+                  "        pm.expect(jsonData.data).to.not.have.property(\"password\");",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Pratham Singh\",\n  \"email\": \"{{testEmail}}\",\n  \"password\": \"{{testPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Registers a new student account and sets an HttpOnly JWT authentication cookie."
+          },
+          "response": []
+        },
+        {
+          "name": "Login Student",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Login successful and sets cookie\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "    pm.expect(jsonData.data.email).to.eql(pm.collectionVariables.get(\"testEmail\"));",
+                  "    pm.expect(jsonData.data).to.not.have.property(\"password\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{testEmail}}\",\n  \"password\": \"{{testPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Authenticates student credentials and issues an HttpOnly JWT cookie."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current User Profile",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Profile matches logged-in user\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "    pm.expect(jsonData.data.email).to.eql(pm.collectionVariables.get(\"testEmail\"));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            },
+            "description": "Retrieves the authenticated student's profile via verified JWT cookie."
+          },
+          "response": []
+        },
+        {
+          "name": "Logout Student",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Logout clears authentication\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "logout"]
+            },
+            "description": "Clears the authentication cookie and ends student session."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Academic Plans CRUD",
+      "item": [
+        {
+          "name": "Create Academic Plan (POST /api/plans)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"Academic plan created in MongoDB\", function () {",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "    pm.expect(jsonData.data).to.have.property(\"_id\");",
+                  "    pm.expect(jsonData.data.name).to.eql(\"Semester 3 Planning\");",
+                  "    pm.expect(jsonData.data.targetCGPA).to.eql(8.5);",
+                  "    pm.expect(jsonData.data.courses).to.be.an(\"array\").with.lengthOf(2);",
+                  "});",
+                  "if (jsonData.data && jsonData.data._id) {",
+                  "    pm.collectionVariables.set(\"planId\", jsonData.data._id);",
+                  "    console.log(\"Saved planId to collection:\", jsonData.data._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Semester 3 Planning\",\n  \"currentCGPA\": 7.82,\n  \"completedCredits\": 42,\n  \"targetCGPA\": 8.50,\n  \"semester\": 3,\n  \"programId\": \"cse\",\n  \"relativePreset\": \"moderate\",\n  \"mean\": 62,\n  \"sd\": 14,\n  \"courses\": [\n    {\n      \"code\": \"CSE201\",\n      \"name\": \"Data Structures and Algorithms\",\n      \"credits\": 4,\n      \"type\": \"Core Computing\",\n      \"internalMarks\": 36,\n      \"maxInternal\": 50,\n      \"maxEndSem\": 50,\n      \"endSemMarks\": 38\n    },\n    {\n      \"code\": \"CSE202\",\n      \"name\": \"Discrete Mathematical Structures\",\n      \"credits\": 4,\n      \"type\": \"Core Science\",\n      \"internalMarks\": 35,\n      \"maxInternal\": 50,\n      \"maxEndSem\": 50,\n      \"endSemMarks\": 36\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/plans",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "plans"]
+            },
+            "description": "Creates a new academic plan associated with the authenticated student in MongoDB Atlas. Saves returned plan ID into collection variable 'planId'."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Academic Plans (GET /api/plans)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Returns array of student plans\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "    pm.expect(jsonData.data).to.be.an(\"array\");",
+                  "    pm.expect(jsonData.count).to.be.at.least(1);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/plans",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "plans"]
+            },
+            "description": "Retrieves all academic plans belonging exclusively to the authenticated user."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Academic Plan (GET /api/plans/:id)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Plan matches requested ID\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "    pm.expect(jsonData.data._id).to.eql(pm.collectionVariables.get(\"planId\"));",
+                  "    pm.expect(jsonData.data.name).to.eql(\"Semester 3 Planning\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/plans/{{planId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "plans", "{{planId}}"]
+            },
+            "description": "Fetches a specific academic plan by its MongoDB ObjectId."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Academic Plan (PATCH /api/plans/:id)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Plan fields updated correctly\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "    pm.expect(jsonData.data.name).to.eql(\"Semester 3 Planning (Updated Target)\");",
+                  "    pm.expect(jsonData.data.targetCGPA).to.eql(8.75);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Semester 3 Planning (Updated Target)\",\n  \"targetCGPA\": 8.75\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/plans/{{planId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "plans", "{{planId}}"]
+            },
+            "description": "Modifies permitted fields of an existing academic plan with Mongoose validation."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Academic Plan (DELETE /api/plans/:id)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Deletion response confirms success\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "    pm.expect(jsonData.message).to.eql(\"Academic plan deleted successfully\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/plans/{{planId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "plans", "{{planId}}"]
+            },
+            "description": "Deletes the academic plan document from MongoDB Atlas."
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Plan Deleted (GET /api/plans/:id -> 404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404 Not Found\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test(\"Confirms deleted resource is inaccessible\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/plans/{{planId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "plans", "{{planId}}"]
+            },
+            "description": "Verifies that the deleted academic plan is no longer accessible, confirming complete database deletion."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
+

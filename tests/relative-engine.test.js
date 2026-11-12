@@ -1,4 +1,4 @@
-import { computeGradeCutoffs, evaluateGrade, calculateCohortStats } from '../relative-engine.js';
+import { computeGradeCutoffs, evaluateGrade, calculateCohortStats } from '../public/relative-engine.js';
 
 console.log('Testing Relative Engine...');
 const cutoffs = computeGradeCutoffs(62, 14);

@@ -14,6 +14,7 @@ import {
   solveEndSemMarks
 } from './endsem-solver.js';
 import { BMUAIAdvisor } from './ai-advisor.js';
+import { api } from './api.js';
 
 // Application State
 const STATE = {
@@ -34,7 +35,11 @@ const STATE = {
   wizardStep: 1,
   modalWizardStep: 1,
   theme: "light",
-  geminiApiKey: ""
+  geminiApiKey: "",
+  currentUser: null,
+  loadedPlanId: null,
+  loadedPlanName: null,
+  userPlans: []
 };
 
 const aiAdvisor = new BMUAIAdvisor();
@@ -49,6 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initWizardStep(1);
   initModalWizardStep(1);
   renderBellCurve();
+  checkAuthStatus();
 });
 
 // Load state from localStorage if available
@@ -1473,4 +1479,513 @@ function formatMarkdown(text) {
     .replace(/\n/g, '<br>');
   return formatted;
 }
+
+// ==========================================
+// FULL-STACK BACKEND & AUTH INTEGRATION
+// ==========================================
+
+// Floating Toast Notification
+export function showToast(message, type = 'info') {
+  const toast = document.getElementById('toastNotification');
+  if (!toast) return;
+
+  toast.textContent = message;
+  toast.className = `toast-banner show ${type}`;
+
+  setTimeout(() => {
+    toast.className = 'toast-banner';
+  }, 4000);
+}
+window.showToast = showToast;
+
+// Check Auth Status on Page Load
+async function checkAuthStatus() {
+  try {
+    const res = await api.auth.getMe();
+    if (res && res.success && res.data) {
+      STATE.currentUser = res.data;
+      renderAuthUI();
+      loadUserPlans();
+    } else {
+      STATE.currentUser = null;
+      renderAuthUI();
+    }
+  } catch (error) {
+    // Unauthenticated is expected for guests; keep local mode fully functional
+    STATE.currentUser = null;
+    renderAuthUI();
+  }
+}
+
+// Render Header Authentication UI
+function renderAuthUI() {
+  const container = document.getElementById('authNavContainer');
+  if (!container) return;
+
+  if (STATE.currentUser) {
+    const planBadge = STATE.loadedPlanName
+      ? `<span class="badge-tag badge-pink" title="Active Cloud Plan">Active: ${escapeHtml(STATE.loadedPlanName)}</span>`
+      : '';
+
+    container.innerHTML = `
+      <span class="badge-tag badge-mint" title="${escapeHtml(STATE.currentUser.email)}">
+        👤 ${escapeHtml(STATE.currentUser.name)}
+      </span>
+      ${planBadge}
+      <button class="btn btn-sm btn-accent" onclick="openSavePlanModal()">
+        💾 Save Plan
+      </button>
+      <button class="btn btn-sm" onclick="openCloudPlansModal()">
+        📂 My Plans (<span id="plansCountBadge">${STATE.userPlans.length}</span>)
+      </button>
+      <button class="btn btn-sm" onclick="handleLogout()" title="Log Out">
+        🚪
+      </button>
+    `;
+  } else {
+    container.innerHTML = `
+      <span class="badge-tag badge-gray" style="font-size: 0.72rem;">Local Mode</span>
+      <button class="btn btn-sm btn-accent" onclick="openAuthModal()">
+        🔑 Sign In / Register
+      </button>
+    `;
+  }
+}
+
+// Auth Modal Controls
+window.openAuthModal = function(initialTab = 'login') {
+  const modal = document.getElementById('authModal');
+  if (!modal) return;
+  modal.classList.add('open');
+  switchAuthTab(initialTab);
+};
+
+window.closeAuthModal = function() {
+  const modal = document.getElementById('authModal');
+  if (modal) modal.classList.remove('open');
+};
+
+window.switchAuthTab = function(mode) {
+  const tabLogin = document.getElementById('authTabLogin');
+  const tabRegister = document.getElementById('authTabRegister');
+  const formLogin = document.getElementById('loginForm');
+  const formRegister = document.getElementById('registerForm');
+  const alertBox = document.getElementById('authAlertBox');
+
+  if (alertBox) alertBox.style.display = 'none';
+
+  if (mode === 'login') {
+    tabLogin?.classList.add('btn-accent', 'active');
+    tabRegister?.classList.remove('btn-accent', 'active');
+    if (formLogin) formLogin.style.display = 'block';
+    if (formRegister) formRegister.style.display = 'none';
+  } else {
+    tabRegister?.classList.add('btn-accent', 'active');
+    tabLogin?.classList.remove('btn-accent', 'active');
+    if (formRegister) formRegister.style.display = 'block';
+    if (formLogin) formLogin.style.display = 'none';
+  }
+};
+
+// Handle Login Submission
+window.handleLoginSubmit = async function(event) {
+  event.preventDefault();
+  const email = document.getElementById('loginEmail')?.value.trim();
+  const password = document.getElementById('loginPassword')?.value;
+  const alertBox = document.getElementById('authAlertBox');
+
+  try {
+    const res = await api.auth.login(email, password);
+    if (res.success) {
+      STATE.currentUser = res.data;
+      closeAuthModal();
+      renderAuthUI();
+      loadUserPlans();
+      showToast(`Welcome back, ${res.data.name}!`, 'success');
+    }
+  } catch (error) {
+    if (alertBox) {
+      alertBox.textContent = error.message;
+      alertBox.style.display = 'block';
+      alertBox.style.background = '#ffe5e5';
+      alertBox.style.color = '#c53030';
+      alertBox.style.border = '1.5px solid #feb2b2';
+    }
+  }
+};
+
+// Handle Register Submission
+window.handleRegisterSubmit = async function(event) {
+  event.preventDefault();
+  const name = document.getElementById('regName')?.value.trim();
+  const email = document.getElementById('regEmail')?.value.trim();
+  const password = document.getElementById('regPassword')?.value;
+  const alertBox = document.getElementById('authAlertBox');
+
+  try {
+    const res = await api.auth.register(name, email, password);
+    if (res.success) {
+      STATE.currentUser = res.data;
+      closeAuthModal();
+      renderAuthUI();
+      loadUserPlans();
+      showToast(`Account created! Welcome to CGPA Studio, ${res.data.name}!`, 'success');
+    }
+  } catch (error) {
+    if (alertBox) {
+      alertBox.textContent = error.message;
+      alertBox.style.display = 'block';
+      alertBox.style.background = '#ffe5e5';
+      alertBox.style.color = '#c53030';
+      alertBox.style.border = '1.5px solid #feb2b2';
+    }
+  }
+};
+
+// Handle Logout
+window.handleLogout = async function() {
+  try {
+    await api.auth.logout();
+    STATE.currentUser = null;
+    STATE.loadedPlanId = null;
+    STATE.loadedPlanName = null;
+    STATE.userPlans = [];
+    renderAuthUI();
+    showToast('Logged out successfully. Running in local mode.', 'info');
+  } catch (error) {
+    showToast(`Logout error: ${error.message}`, 'error');
+  }
+};
+
+// ==========================================
+// ACADEMIC PLANS MONGODB CRUD OPERATIONS
+// ==========================================
+
+// Load user plans list from MongoDB
+async function loadUserPlans() {
+  if (!STATE.currentUser) return;
+  try {
+    const res = await api.plans.getAll();
+    if (res.success && Array.isArray(res.data)) {
+      STATE.userPlans = res.data;
+      const badge = document.getElementById('plansCountBadge');
+      if (badge) badge.textContent = STATE.userPlans.length;
+    }
+  } catch (error) {
+    console.warn('Could not fetch cloud plans:', error);
+  }
+}
+
+// Open Save Plan Modal
+window.openSavePlanModal = function() {
+  if (!STATE.currentUser) {
+    openAuthModal('login');
+    showToast('Please sign in to save your plans to MongoDB Cloud.', 'info');
+    return;
+  }
+
+  const modal = document.getElementById('savePlanModal');
+  if (!modal) return;
+
+  // Populate preview summary
+  const curCGPAEl = document.getElementById('saveModalCurrentCGPA');
+  const creditsEl = document.getElementById('saveModalCredits');
+  const targetCGPAEl = document.getElementById('saveModalTargetCGPA');
+  const semEl = document.getElementById('saveModalSemester');
+  const courseCountEl = document.getElementById('saveModalCourseCount');
+  const presetEl = document.getElementById('saveModalPreset');
+  const meanEl = document.getElementById('saveModalMean');
+  const sdEl = document.getElementById('saveModalSD');
+  const titleInput = document.getElementById('planTitleInput');
+  const updateBtn = document.getElementById('updateLoadedPlanBtn');
+
+  if (curCGPAEl) curCGPAEl.textContent = STATE.currentCGPA.toFixed(2);
+  if (creditsEl) creditsEl.textContent = STATE.completedCredits;
+  if (targetCGPAEl) targetCGPAEl.textContent = STATE.targetCGPA.toFixed(2);
+  if (semEl) semEl.textContent = STATE.semester;
+  if (courseCountEl) courseCountEl.textContent = STATE.courses.length;
+  if (presetEl) presetEl.textContent = STATE.relativePreset;
+  if (meanEl) meanEl.textContent = STATE.mean;
+  if (sdEl) sdEl.textContent = STATE.sd;
+
+  if (STATE.loadedPlanId && STATE.loadedPlanName) {
+    if (titleInput) titleInput.value = STATE.loadedPlanName;
+    if (updateBtn) updateBtn.style.display = 'inline-block';
+  } else {
+    if (titleInput) titleInput.value = `Semester ${STATE.semester} Plan (${STATE.targetCGPA.toFixed(2)} Target)`;
+    if (updateBtn) updateBtn.style.display = 'none';
+  }
+
+  modal.classList.add('open');
+};
+
+window.closeSavePlanModal = function() {
+  const modal = document.getElementById('savePlanModal');
+  if (modal) modal.classList.remove('open');
+};
+
+// Submit Save Plan (POST /api/plans)
+window.handleSavePlanSubmit = async function(event) {
+  event.preventDefault();
+  const titleInput = document.getElementById('planTitleInput');
+  const planName = titleInput?.value.trim() || `Semester ${STATE.semester} Plan`;
+
+  const payload = {
+    name: planName,
+    currentCGPA: STATE.currentCGPA,
+    completedCredits: STATE.completedCredits,
+    targetCGPA: STATE.targetCGPA,
+    semester: STATE.semester,
+    programId: STATE.programId,
+    relativePreset: STATE.relativePreset,
+    mean: STATE.mean,
+    sd: STATE.sd,
+    courses: STATE.courses.map(c => ({
+      code: c.code || '',
+      name: c.name || '',
+      credits: Number(c.credits) || 3,
+      type: c.type || 'Core',
+      internalMarks: Number(c.internalMarks) || 0,
+      maxInternal: Number(c.maxInternal) || 50,
+      maxEndSem: Number(c.maxEndSem) || 50,
+      endSemMarks: Number(c.endSemMarks) || 0
+    }))
+  };
+
+  try {
+    const res = await api.plans.create(payload);
+    if (res.success && res.data) {
+      STATE.loadedPlanId = res.data._id;
+      STATE.loadedPlanName = res.data.name;
+      closeSavePlanModal();
+      await loadUserPlans();
+      renderAuthUI();
+      showToast(`Plan "${res.data.name}" saved to MongoDB Cloud!`, 'success');
+    }
+  } catch (error) {
+    showToast(`Error saving plan: ${error.message}`, 'error');
+  }
+};
+
+// Handle Update Existing Plan (PATCH /api/plans/:id)
+window.handleUpdatePlanClick = async function() {
+  if (!STATE.loadedPlanId) return;
+
+  const titleInput = document.getElementById('planTitleInput');
+  const planName = titleInput?.value.trim() || STATE.loadedPlanName;
+
+  const payload = {
+    name: planName,
+    currentCGPA: STATE.currentCGPA,
+    completedCredits: STATE.completedCredits,
+    targetCGPA: STATE.targetCGPA,
+    semester: STATE.semester,
+    programId: STATE.programId,
+    relativePreset: STATE.relativePreset,
+    mean: STATE.mean,
+    sd: STATE.sd,
+    courses: STATE.courses.map(c => ({
+      code: c.code || '',
+      name: c.name || '',
+      credits: Number(c.credits) || 3,
+      type: c.type || 'Core',
+      internalMarks: Number(c.internalMarks) || 0,
+      maxInternal: Number(c.maxInternal) || 50,
+      maxEndSem: Number(c.maxEndSem) || 50,
+      endSemMarks: Number(c.endSemMarks) || 0
+    }))
+  };
+
+  try {
+    const res = await api.plans.update(STATE.loadedPlanId, payload);
+    if (res.success && res.data) {
+      STATE.loadedPlanName = res.data.name;
+      closeSavePlanModal();
+      await loadUserPlans();
+      renderAuthUI();
+      showToast(`Plan "${res.data.name}" updated in MongoDB Cloud!`, 'success');
+    }
+  } catch (error) {
+    showToast(`Error updating plan: ${error.message}`, 'error');
+  }
+};
+
+// Open Cloud Plans Modal & Render List
+window.openCloudPlansModal = async function() {
+  if (!STATE.currentUser) {
+    openAuthModal('login');
+    return;
+  }
+
+  const modal = document.getElementById('cloudPlansModal');
+  if (!modal) return;
+
+  modal.classList.add('open');
+  await refreshUserPlans();
+};
+
+window.closeCloudPlansModal = function() {
+  const modal = document.getElementById('cloudPlansModal');
+  if (modal) modal.classList.remove('open');
+};
+
+window.refreshUserPlans = async function() {
+  const container = document.getElementById('cloudPlansListContainer');
+  if (container) {
+    container.innerHTML = '<div style="padding:1rem;text-align:center;color:var(--text-muted);">Loading plans from MongoDB...</div>';
+  }
+
+  await loadUserPlans();
+  renderCloudPlansList();
+};
+
+function renderCloudPlansList() {
+  const container = document.getElementById('cloudPlansListContainer');
+  if (!container) return;
+
+  if (STATE.userPlans.length === 0) {
+    container.innerHTML = `
+      <div style="padding: 2rem 1rem; text-align: center; border: 2px dashed var(--border-color); border-radius: var(--radius-sm); background: var(--surface-alt);">
+        <p style="font-weight: 700; margin-bottom: 0.5rem;">No saved academic plans yet.</p>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+          Configure your semester marks and click <strong>"Save Plan"</strong> to persist them to MongoDB.
+        </p>
+        <button class="btn btn-sm btn-primary" onclick="closeCloudPlansModal(); openSavePlanModal();">
+          💾 Save Current Workspace as Plan
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = '';
+  STATE.userPlans.forEach(plan => {
+    const updatedDate = new Date(plan.updatedAt || plan.createdAt).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+
+    const isCurrentlyLoaded = STATE.loadedPlanId === plan._id;
+
+    const item = document.createElement('div');
+    item.className = 'plan-card-item';
+    item.innerHTML = `
+      <div class="plan-card-info">
+        <div class="plan-card-title">
+          ${escapeHtml(plan.name)}
+          ${isCurrentlyLoaded ? '<span class="badge-tag badge-pink" style="font-size:0.68rem;padding:0.15rem 0.4rem;margin-left:0.4rem;">Currently Active</span>' : ''}
+        </div>
+        <div class="plan-card-meta">
+          <span class="badge-tag badge-yellow" style="font-size:0.7rem;padding:0.15rem 0.4rem;">Sem ${plan.semester} (${plan.programId ? plan.programId.toUpperCase() : 'CSE'})</span>
+          <span>Target: <strong>${Number(plan.targetCGPA || 8).toFixed(2)} CGPA</strong></span>
+          <span>•</span>
+          <span>${plan.courses ? plan.courses.length : 0} Courses</span>
+          <span>•</span>
+          <span>Updated: ${updatedDate}</span>
+        </div>
+      </div>
+      <div class="plan-card-actions">
+        <button class="btn btn-sm btn-mint" onclick="loadCloudPlan('${plan._id}')" title="Load into Calculator">
+          ⚡ Load Plan
+        </button>
+        <button class="btn btn-sm btn-icon" style="color:var(--accent-red);" onclick="deleteCloudPlan('${plan._id}', '${escapeHtml(plan.name)}')" title="Delete from Cloud">
+          🗑️
+        </button>
+      </div>
+    `;
+    container.appendChild(item);
+  });
+}
+
+// Load a plan from MongoDB into the calculator state
+window.loadCloudPlan = async function(planId) {
+  try {
+    const res = await api.plans.getById(planId);
+    if (!res.success || !res.data) {
+      throw new Error('Plan data could not be retrieved');
+    }
+
+    const plan = res.data;
+
+    // Restore state
+    STATE.currentCGPA = Number(plan.currentCGPA) || 7.0;
+    STATE.completedCredits = Number(plan.completedCredits) || 0;
+    STATE.targetCGPA = Number(plan.targetCGPA) || 8.5;
+    STATE.semester = Number(plan.semester) || 3;
+    STATE.programId = plan.programId || 'cse';
+    STATE.relativePreset = plan.relativePreset || 'moderate';
+    STATE.mean = Number(plan.mean) || 62;
+    STATE.sd = Number(plan.sd) || 14;
+
+    if (Array.isArray(plan.courses) && plan.courses.length > 0) {
+      STATE.courses = plan.courses.map(c => ({
+        code: c.code || '',
+        name: c.name || 'Untitled Course',
+        credits: Number(c.credits) || 3,
+        type: c.type || 'Core',
+        internalMarks: Number(c.internalMarks) || 0,
+        maxInternal: Number(c.maxInternal) || 50,
+        maxEndSem: Number(c.maxEndSem) || 50,
+        endSemMarks: Number(c.endSemMarks) || 0,
+        gradeObj: null
+      }));
+    }
+
+    STATE.loadedPlanId = plan._id;
+    STATE.loadedPlanName = plan.name;
+
+    // Synchronize form inputs
+    const curCGPAInput = document.getElementById('inputCurrentCGPA');
+    const compCrInput = document.getElementById('inputCompletedCredits');
+    const targetCGPAInput = document.getElementById('inputTargetCGPA');
+    const progSemSelect = document.getElementById('selectProgramSemester');
+    const meanRange = document.getElementById('curveMeanRange');
+    const meanInput = document.getElementById('curveMeanInput');
+    const sdRange = document.getElementById('curveSDRange');
+    const sdInput = document.getElementById('curveSDInput');
+
+    if (curCGPAInput) curCGPAInput.value = STATE.currentCGPA;
+    if (compCrInput) compCrInput.value = STATE.completedCredits;
+    if (targetCGPAInput) targetCGPAInput.value = STATE.targetCGPA;
+    if (progSemSelect) progSemSelect.value = `${STATE.programId}-${STATE.semester}`;
+    if (meanRange) meanRange.value = STATE.mean;
+    if (meanInput) meanInput.value = STATE.mean;
+    if (sdRange) sdRange.value = STATE.sd;
+    if (sdInput) sdInput.value = STATE.sd;
+
+    // Recompute and refresh entire UI
+    renderAll();
+    renderBellCurve();
+    renderSolverTab();
+    renderAuthUI();
+    closeCloudPlansModal();
+
+    showToast(`Loaded plan: "${plan.name}" from MongoDB Cloud!`, 'success');
+  } catch (error) {
+    showToast(`Failed to load plan: ${error.message}`, 'error');
+  }
+};
+
+// Delete a plan from MongoDB
+window.deleteCloudPlan = async function(planId, planName) {
+  const confirmed = confirm(`Are you sure you want to delete the plan "${planName}" from MongoDB Cloud? This action cannot be undone.`);
+  if (!confirmed) return;
+
+  try {
+    const res = await api.plans.delete(planId);
+    if (res.success) {
+      if (STATE.loadedPlanId === planId) {
+        STATE.loadedPlanId = null;
+        STATE.loadedPlanName = null;
+      }
+      await refreshUserPlans();
+      renderAuthUI();
+      showToast(`Plan "${planName}" deleted successfully from MongoDB.`, 'info');
+    }
+  } catch (error) {
+    showToast(`Failed to delete plan: ${error.message}`, 'error');
+  }
+};
+
 

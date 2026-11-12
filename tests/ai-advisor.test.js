@@ -1,5 +1,5 @@
-import { BMUAIAdvisor } from '../ai-advisor.js';
-import { computeGradeCutoffs } from '../relative-engine.js';
+import { BMUAIAdvisor } from '../public/ai-advisor.js';
+import { computeGradeCutoffs } from '../public/relative-engine.js';
 
 console.log('Testing AI Advisor...');
 const advisor = new BMUAIAdvisor();

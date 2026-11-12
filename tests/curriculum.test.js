@@ -1,4 +1,4 @@
-import { BMU_PROGRAMS, BMU_GRADE_SCALE, RELATIVE_PRESETS } from '../curriculum.js';
+import { BMU_PROGRAMS, BMU_GRADE_SCALE, RELATIVE_PRESETS } from '../public/curriculum.js';
 
 console.log('Testing Curriculum...');
 if (!BMU_PROGRAMS.cse) throw new Error('CSE Program missing');
